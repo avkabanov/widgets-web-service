@@ -2,20 +2,20 @@ package com.kabanov.widgets.domain;
 
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * @author Kabanov Alexey
  */
 public class Widget {
-    
+
     private UUID uuid;
     private Point startPoint;
     private int height;
-    private int width; 
+    private int width;
     private int zIndex;
     private LocalDateTime lastModificationTime;
-    private LocalDateTime creationDateTime;
 
     public Widget() {
     }
@@ -30,6 +30,16 @@ public class Widget {
         this.lastModificationTime = lastModificationTime;
     }
 
+    public Widget(Widget widget) {
+        this.uuid = widget.uuid;
+        this.startPoint = widget.startPoint;
+        this.height = widget.height;
+        this.width = widget.width;
+        this.zIndex = widget.zIndex;
+        this.lastModificationTime = widget.lastModificationTime;
+        
+    }
+    
     public UUID getUuid() {
         return uuid;
     }
@@ -78,11 +88,34 @@ public class Widget {
         this.lastModificationTime = lastModificationTime;
     }
 
-    public LocalDateTime getCreationDateTime() {
-        return creationDateTime;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Widget widget = (Widget) o;
+        return height == widget.height &&
+                width == widget.width &&
+                zIndex == widget.zIndex &&
+                Objects.equals(uuid, widget.uuid) &&
+                Objects.equals(startPoint, widget.startPoint) &&
+                Objects.equals(lastModificationTime, widget.lastModificationTime);
     }
 
-    public void setCreationDateTime(LocalDateTime creationDateTime) {
-        this.creationDateTime = creationDateTime;
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, startPoint, height, width, zIndex, lastModificationTime);
+    }
+
+    @Override
+    public String toString() {
+        return "Widget{" +
+                "uuid=" + uuid +
+                ", startPoint=" + startPoint +
+                ", height=" + height +
+                ", width=" + width +
+                ", zIndex=" + zIndex +
+                ", lastModificationTime=" + lastModificationTime +
+                '}';
     }
 }
+

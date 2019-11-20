@@ -3,6 +3,8 @@ package com.kabanov.widgets.service.cache;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nonnull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +24,11 @@ public class WidgetCache {
         this.widgetLayersStorage = widgetLayersStorage;
     }
 
+    @Nonnull
     public Widget add(Widget widget) {
         if (widget == null) {
             throw new IllegalArgumentException("Widget can not be null");
         }
-
-        uuidWidgetMap.computeIfAbsent(widget.getUuid(), w -> widgetLayersStorage.add(widget));
-        
-        return widget;
+        return uuidWidgetMap.computeIfAbsent(widget.getUuid(), w -> widgetLayersStorage.add(widget));
     }
 }

@@ -32,9 +32,9 @@ public class WidgetLayersStorageTest {
         Widget widget = createWidget(2);
         Widget expected = createWidget(widget, 2);
 
-        Widget result = widgetLayersStorage.add(widget);
+        Widget actual = widgetLayersStorage.add(widget);
 
-        Assert.assertEquals(expected, result);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -42,9 +42,9 @@ public class WidgetLayersStorageTest {
         Widget widget = createWidget(null);
         Widget expected = createWidget(widget, 0);
 
-        Widget result = widgetLayersStorage.add(widget);
+        Widget actual = widgetLayersStorage.add(widget);
 
-        Assert.assertEquals(expected, result);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -61,8 +61,8 @@ public class WidgetLayersStorageTest {
         widgetLayersStorage.add(one);
         widgetLayersStorage.add(four);
 
-        List<Widget> result = widgetLayersStorage.getAllWidgetsSortedByLayer();
-        Assert.assertEquals(expected, result);
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer();
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -88,9 +88,9 @@ public class WidgetLayersStorageTest {
         widgetLayersStorage.add(four);
         widgetLayersStorage.add(insertedInPlaceOfTwo);
 
-        List<Widget> result = widgetLayersStorage.getAllWidgetsSortedByLayer();
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer();
 
-        Assert.assertEquals(expected, result);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -116,9 +116,9 @@ public class WidgetLayersStorageTest {
         widgetLayersStorage.add(firstBg);
         widgetLayersStorage.add(secondBg);
 
-        List<Widget> result = widgetLayersStorage.getAllWidgetsSortedByLayer();
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer();
 
-        Assert.assertEquals(expected, result);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -128,8 +128,8 @@ public class WidgetLayersStorageTest {
 
         widgetLayersStorage.add(widget);
 
-        List<Widget> result = widgetLayersStorage.getAllWidgetsSortedByLayer();
-        Assert.assertEquals(expected, result);
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer();
+        Assert.assertEquals(expected, actual);
     }
 
 

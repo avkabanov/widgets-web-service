@@ -57,10 +57,19 @@ public class WidgetLayersStorage {
                     shiftUpperWidgets(widget);
                     widgetsByLayer.add(widget);
                 }
-
             } finally {
                 updateTreeLock.unlock();
             }
+        }
+    }
+
+    public void update(Widget oldWidget, Widget updatedWidget) {
+        updateTreeLock.lock();
+        try {
+            widgetsByLayer.remove(oldWidget);
+            doInsertWithShift(updatedWidget);
+        } finally {
+            updateTreeLock.unlock();
         }
     }
 

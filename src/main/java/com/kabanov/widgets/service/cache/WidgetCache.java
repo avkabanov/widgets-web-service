@@ -22,20 +22,13 @@ public class WidgetCache {
         this.widgetLayersStorage = widgetLayersStorage;
     }
 
-    public Widget add(Widget widget, boolean isBackgroundWidget) {
+    public Widget add(Widget widget) {
         if (widget == null) {
             throw new IllegalArgumentException("Widget can not be null");
         }
 
-        uuidWidgetMap.computeIfAbsent(widget.getUuid(), w -> {
-            widgetLayersStorage.add(widget, isBackgroundWidget);
-            return widget;
-        });
+        uuidWidgetMap.computeIfAbsent(widget.getUuid(), w -> widgetLayersStorage.add(widget));
         
         return widget;
-    }
-
-    public int getBackgroundIndex() {
-        return widgetLayersStorage.getBackgroundIndex();
     }
 }

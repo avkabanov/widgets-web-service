@@ -30,19 +30,13 @@ public class WidgetService {
         widget.setStartPoint(createWidgetRequest.getStartPoint());
         widget.setHeight(createWidgetRequest.getHeight());
         widget.setWidth(createWidgetRequest.getWidth());
-
-        boolean isBackgroundWidget = createWidgetRequest.getZIndex() == null;
+        widget.setZIndex(createWidgetRequest.getZIndex());
         
-        if (isBackgroundWidget) {
-            widget.setZIndex(widgetCache.getBackgroundIndex());
-        } else {
-            widget.setZIndex(createWidgetRequest.getZIndex());
-        }
-        return addWidgetToCache(widget, isBackgroundWidget);
+        return addWidgetToCache(widget);
     }
     
-    public Widget addWidgetToCache(Widget widget, boolean isBackgroundWidget) {
-        return widgetCache.add(widget, isBackgroundWidget);   
+    public Widget addWidgetToCache(Widget widget) {
+        return widgetCache.add(widget);   
     }
 
     

@@ -14,13 +14,13 @@ public class Widget {
     private Point startPoint;
     private int height;
     private int width;
-    private int zIndex;
+    private Integer zIndex;
     private LocalDateTime lastModificationTime;
 
     public Widget() {
     }
 
-    public Widget(UUID uuid, Point startPoint, int height, int width, int zIndex,
+    public Widget(UUID uuid, Point startPoint, int height, int width, Integer zIndex,
                   LocalDateTime lastModificationTime) {
         this.uuid = uuid;
         this.startPoint = startPoint;
@@ -72,11 +72,11 @@ public class Widget {
         this.width = width;
     }
 
-    public int getZIndex() {
+    public Integer getZIndex() {
         return zIndex;
     }
 
-    public void setZIndex(int zIndex) {
+    public void setZIndex(Integer zIndex) {
         this.zIndex = zIndex;
     }
 

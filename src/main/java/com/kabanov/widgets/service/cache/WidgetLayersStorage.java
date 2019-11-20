@@ -31,13 +31,17 @@ public class WidgetLayersStorage {
     private Lock updateTreeLock = readWriteLock.writeLock();
     private Lock accessTreeLock = readWriteLock.readLock();
 
-    public Widget add(Widget widget, boolean isBackgroundWidget) {
-        if (isBackgroundWidget) {
+    public Widget add(Widget widget) {
+        if (isBackgroundWidget(widget)) {
             doInsertToBackground(widget);
         } else {
             doInsertWithShift(widget);
         }
         return widget;
+    }
+
+    private boolean isBackgroundWidget(Widget widget) {
+        return widget.getZIndex() == null;
     }
 
     private void doInsertWithShift(Widget widget) {
@@ -104,6 +108,8 @@ public class WidgetLayersStorage {
     }
 
     private void doInsertToBackground(Widget widget) {
+        widget.setZIndex(getBackgroundIndex()); 
+        
         boolean inserted;
         do {
             inserted = tryInsertOnEmptyIndex(widget);
@@ -114,7 +120,7 @@ public class WidgetLayersStorage {
         } while (!inserted);
     }
 
-    public int getBackgroundIndex() {
+    private int getBackgroundIndex() {
         accessTreeLock.lock();
         try {
             return widgetsByLayer.isEmpty() ? BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1;

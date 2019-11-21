@@ -17,6 +17,5 @@ public class UpdateWidgetValidator {
             throw new ValidationException(
                     "UUID can not be modified. Existing widget: " + oldWidget + " Modify request: " + updatedWidget);
         }
-
     }
 }

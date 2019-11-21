@@ -119,6 +119,21 @@ public class WidgetLayersStorageTest {
     }
 
     @Test
+    public void shouldWidgetBeRemovedWhenRemoveIsCalled() {
+        Widget one = WidgetUtils.createWidget(1);
+        Widget two = WidgetUtils.createWidget(2);
+        
+        List<Widget> expected = Arrays.asList(two);
+        
+        widgetLayersStorage.add(one);
+        widgetLayersStorage.add(two);
+        widgetLayersStorage.remove(one);
+
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer();
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void shouldBeInitialPositionZeroForBackgroundWidgets() {
         Widget widget = WidgetUtils.createWidget(null);
         List<Widget> expected = Arrays.asList(WidgetUtils.createWidget(widget, 0));

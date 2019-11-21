@@ -147,6 +147,15 @@ public class WidgetLayersStorage {
         }
     }
 
+    public void remove(Widget value) {
+        accessTreeLock.lock();
+        try {
+            widgetsByLayer.remove(value);
+        } finally {
+            accessTreeLock.unlock();
+        }
+    }
+
     public static class Result {
         private final Widget resultedWidget;
         private final Collection<Widget> changedWidgets;

@@ -2,6 +2,7 @@ package com.kabanov.widgets.service.cache;
 
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -95,7 +96,7 @@ public class WidgetCacheTest {
     }
 
     @Test
-    public void shouldUpdateWidgetWhenUpdateIsCalled() throws ValidationException {
+    public void shouldUpdateWidgetWhenUpdateIsInvoked() throws ValidationException {
         UUID uuid = UUID.randomUUID();
         Widget widget = new Widget(uuid, new Point(1, 1), 2, 3, 4, LocalDateTime.now());
         Widget updatedWidget = new Widget(uuid, new Point(2, 2), 3, 4, 5, LocalDateTime.now());
@@ -108,6 +109,22 @@ public class WidgetCacheTest {
 
         Assert.assertEquals(expected, widgetCache.getWidget(uuid));
         Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer().get(0));
+    }
+
+    @Test
+    public void shouldRemoveWidgetWhenRemoveIsInvoked() {
+        Widget one = WidgetUtils.createWidget(1);
+        Widget two = WidgetUtils.createWidget(2);
+
+        List<Widget> expected = Arrays.asList(one); 
+        
+        widgetCache.add(one);
+        widgetCache.add(two);
+        
+        widgetCache.removeWidget(two.getUuid());
+
+        Assert.assertNull(widgetCache.getWidget(two.getUuid()));
+        Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer());
     }
 
     @Test(expected = ValidationException.class)

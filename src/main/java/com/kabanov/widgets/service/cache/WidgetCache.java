@@ -53,6 +53,7 @@ public class WidgetCache {
         return widgetLayersStorage.getAllWidgetsSortedByLayer();
     }
 
+    @Nonnull
     public Widget updateWidget(@Nonnull UUID uuid, @Nonnull Widget updatedWidget) throws ValidationException {
         Widget widget = uuidWidgetMap.get(uuid);
         if (widget == null) {
@@ -66,5 +67,18 @@ public class WidgetCache {
         });
 
         return updatedWidget;
+    }
+    
+    public void removeWidget(@Nonnull UUID uuid) {
+        uuidWidgetMap.compute(uuid, (key, value) -> {
+            if (value == null) {
+                throw new IllegalArgumentException("Can not delete widget with UUID: " + uuid + ". " +
+                        "Widget with such id do not exist");
+            } else {
+                widgetLayersStorage.remove(value);
+                return null;
+            }
+        });
+        
     }
 }

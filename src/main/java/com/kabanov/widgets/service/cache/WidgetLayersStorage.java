@@ -1,7 +1,6 @@
 package com.kabanov.widgets.service.cache;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -153,16 +152,6 @@ public class WidgetLayersStorage {
             widgetsByLayer.remove(value);
         } finally {
             accessTreeLock.unlock();
-        }
-    }
-
-    public static class Result {
-        private final Widget resultedWidget;
-        private final Collection<Widget> changedWidgets;
-
-        public Result(Widget resultedWidget, Collection<Widget> changedWidgets) {
-            this.resultedWidget = resultedWidget;
-            this.changedWidgets = changedWidgets;
         }
     }
 }

@@ -74,6 +74,5 @@ public class WidgetCache {
                 return null;
             }
         });
-        
     }
 }

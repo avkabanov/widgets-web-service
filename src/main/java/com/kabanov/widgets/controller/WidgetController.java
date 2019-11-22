@@ -1,5 +1,6 @@
 package com.kabanov.widgets.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -53,6 +54,13 @@ public class WidgetController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Widget not found id: " + uuid);
         }
+    }
+
+    @GetMapping(path = "/all")
+    @ResponseBody
+    public ResponseEntity<List<Widget>> getAllWidgetsSortedByLayer() {
+        List<Widget> result = widgetService.getAllWidgetsSortedByLayer();
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping(path = "/update")

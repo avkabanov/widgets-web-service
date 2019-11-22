@@ -6,13 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.cache.validator.UpdateWidgetValidator;
 
 /**
  * @author Kabanov Alexey
@@ -21,13 +20,11 @@ import com.kabanov.widgets.service.cache.validator.UpdateWidgetValidator;
 public class WidgetCache {
 
     private WidgetLayersStorage widgetLayersStorage;
-    private UpdateWidgetValidator updateWidgetValidator;
 
     private ConcurrentHashMap<UUID, Widget> uuidWidgetMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public WidgetCache(WidgetLayersStorage widgetLayersStorage, UpdateWidgetValidator updateWidgetValidator) {
-        this.updateWidgetValidator = updateWidgetValidator;
+    public WidgetCache(WidgetLayersStorage widgetLayersStorage) {
         this.widgetLayersStorage = widgetLayersStorage;
     }
 
@@ -54,21 +51,19 @@ public class WidgetCache {
     }
 
     @Nonnull
-    public Widget updateWidget(@Nonnull UUID uuid, @Nonnull Widget updatedWidget) throws ValidationException {
-        Widget widget = uuidWidgetMap.get(uuid);
-        if (widget == null) {
-            throw new IllegalArgumentException("Widget with UUID: " + uuid + " was not found");
-        }
-        updateWidgetValidator.validate(widget, updatedWidget);
-
-        uuidWidgetMap.computeIfPresent(uuid, (uuid1, oldWidget) -> {
-            widgetLayersStorage.update(oldWidget, updatedWidget);
+    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
+        
+        return uuidWidgetMap.compute(updateWidgetRequest.getUuid(), (uuid, existingWidget) -> {
+            if (existingWidget == null) {
+                throw new IllegalArgumentException("Widget with UUID: " + updateWidgetRequest.getUuid() + " was not found");
+            }
+            Widget updatedWidget = updateWidgetRequest.createUpdatedWidget(existingWidget);
+            
+            widgetLayersStorage.update(existingWidget, updatedWidget);
             return updatedWidget;
         });
-
-        return updatedWidget;
     }
-    
+
     public void removeWidget(@Nonnull UUID uuid) {
         uuidWidgetMap.compute(uuid, (key, value) -> {
             if (value == null) {

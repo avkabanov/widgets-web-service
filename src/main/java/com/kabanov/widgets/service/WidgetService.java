@@ -1,13 +1,17 @@
 package com.kabanov.widgets.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.xml.bind.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kabanov.widgets.controller.create_widget.CreateWidgetRequest;
+import com.kabanov.widgets.controller.request.CreateWidgetRequest;
+import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.service.cache.WidgetCache;
 
@@ -39,6 +43,20 @@ public class WidgetService {
         return widgetCache.add(widget);   
     }
 
+    @Nullable
+    public Widget getWidget(@Nonnull UUID uuid) {
+        return widgetCache.getWidget(uuid);     
+    }
+
+    @Nonnull
+    public List<Widget> getAllWidgetsSortedByLayer() {
+        return widgetCache.getAllWidgetsSortedByLayer();
+    }
+
+    @Nonnull
+    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) throws ValidationException {
+        return widgetCache.updateWidget(updateWidgetRequest);    
+    }
     
     
 }

@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.ValidationException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,15 +14,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.cache.validator.UpdateWidgetValidator;
 import com.kabanov.widgets.test_utils.WidgetUtils;
 
 /**
  * @author Kabanov Alexey
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = {WidgetLayersStorage.class, UpdateWidgetValidator.class})
+@WebMvcTest(value = {WidgetLayersStorage.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class WidgetCacheTest {
 
@@ -96,19 +94,36 @@ public class WidgetCacheTest {
     }
 
     @Test
-    public void shouldUpdateWidgetWhenUpdateIsInvoked() throws ValidationException {
+    public void shouldUpdateWidgetWhenUpdateIsInvoked() {
         UUID uuid = UUID.randomUUID();
         Widget widget = new Widget(uuid, new Point(1, 1), 2, 3, 4, LocalDateTime.now());
-        Widget updatedWidget = new Widget(uuid, new Point(2, 2), 3, 4, 5, LocalDateTime.now());
+        
+        UpdateWidgetRequest updateWidgetRequest = new UpdateWidgetRequest();
+        updateWidgetRequest.setUuid(uuid);
+        updateWidgetRequest.setStartPoint (new Point(2, 2));
+        updateWidgetRequest.setHeight(3);
+        updateWidgetRequest.setWidth(4);
+        updateWidgetRequest.setzIndex(5);
 
-        Widget expected = new Widget(updatedWidget);
+        Widget expected = new Widget(uuid, new Point(2, 2), 3, 4, 5, LocalDateTime.now());
 
         widgetCache.add(widget);
-        Widget actual = widgetCache.updateWidget(uuid, updatedWidget);
+        Widget actual = widgetCache.updateWidget(updateWidgetRequest);
         Assert.assertEquals(expected, actual);
 
         Assert.assertEquals(expected, widgetCache.getWidget(uuid));
         Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer().get(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWithUpdatedWidgetNotFound() {
+        Widget widget = WidgetUtils.createWidget(1);
+        UpdateWidgetRequest updateRequest = new UpdateWidgetRequest();
+        updateRequest.setUuid(UUID.randomUUID());
+        updateRequest.setHeight(10); // update random field
+
+        widgetCache.add(widget);
+        widgetCache.updateWidget(updateRequest);
     }
 
     @Test
@@ -126,15 +141,4 @@ public class WidgetCacheTest {
         Assert.assertNull(widgetCache.getWidget(two.getUuid()));
         Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer());
     }
-
-    @Test(expected = ValidationException.class)
-    public void shouldThrowExceptionWhenIdIsModified() throws ValidationException {
-        Widget widget = WidgetUtils.createWidget(1);
-        Widget updatedWidget = new Widget(widget);
-        updatedWidget.setUuid(UUID.randomUUID());
-
-        widgetCache.add(widget);
-        widgetCache.updateWidget(widget.getUuid(), updatedWidget);
-    }
-
 }

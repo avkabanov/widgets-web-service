@@ -1,4 +1,4 @@
-package com.kabanov.widgets.controller.create_widget;
+package com.kabanov.widgets.controller.request;
 
 import java.awt.*;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 public class CreateWidgetRequest {
 
     @NotNull(message = "Start point can not be null")
-    private Point startPoint = new Point();
+    private Point startPoint;
 
     @Positive(message = "Height must be positive")
     private int height;
@@ -22,6 +22,19 @@ public class CreateWidgetRequest {
     
     @Nullable
     private Integer zIndex;
+
+    public CreateWidgetRequest() {
+    }
+
+    public CreateWidgetRequest(
+            @NotNull(message = "Start point can not be null") Point startPoint,
+            @Positive(message = "Height must be positive") int height,
+            @Positive(message = "Width must be positive") int width, @Nullable Integer zIndex) {
+        this.startPoint = startPoint;
+        this.height = height;
+        this.width = width;
+        this.zIndex = zIndex;
+    }
 
     public Point getStartPoint() {
         return startPoint;

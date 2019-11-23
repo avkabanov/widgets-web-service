@@ -51,7 +51,7 @@ public class WidgetLayersStorageTest {
         Widget three = WidgetUtils.createWidget(3);
         Widget four = WidgetUtils.createWidget(4);
 
-        List<Widget> expected = WidgetUtils.deepCopyAsList(one, two, three, four);
+        List<Widget> expected = WidgetUtils.deepCopyToList(one, two, three, four);
 
         widgetLayersStorage.add(three);
         widgetLayersStorage.add(two);

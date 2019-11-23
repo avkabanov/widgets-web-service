@@ -1,5 +1,6 @@
 package com.kabanov.widgets.service.cache;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
+import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 
 /**
@@ -20,12 +22,15 @@ import com.kabanov.widgets.domain.Widget;
 public class WidgetCache {
 
     private WidgetLayersStorage widgetLayersStorage;
+    private WidgetPositionStorage widgetPositionStorage;
 
     private ConcurrentHashMap<UUID, Widget> uuidWidgetMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public WidgetCache(WidgetLayersStorage widgetLayersStorage) {
+    public WidgetCache(WidgetLayersStorage widgetLayersStorage,
+                       WidgetPositionStorage widgetPositionStorage) {
         this.widgetLayersStorage = widgetLayersStorage;
+        this.widgetPositionStorage = widgetPositionStorage;
     }
 
     @Nonnull
@@ -35,7 +40,37 @@ public class WidgetCache {
                 throw new IllegalArgumentException("Can not add widget with UUID: " + widget.getUuid() + ". " +
                         "Widget with such id already exist: " + currentValue);    
             } else {
-                return widgetLayersStorage.add(widget);    
+                widgetPositionStorage.add(widget);
+                return widgetLayersStorage.add(widget); 
+                
+            }
+        });
+    }
+
+    @Nonnull
+    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
+        return uuidWidgetMap.compute(updateWidgetRequest.getUuid(), (uuid, existingWidget) -> {
+            if (existingWidget == null) {
+                throw new IllegalArgumentException("Widget with UUID: " + updateWidgetRequest.getUuid() + " was not found");
+            }
+            Widget updatedWidget = updateWidgetRequest.createUpdatedWidget(existingWidget);
+            updatedWidget.setLastModificationTime(LocalDateTime.now());
+            
+            widgetPositionStorage.update(existingWidget, updatedWidget);
+            widgetLayersStorage.update(existingWidget, updatedWidget);
+            return updatedWidget;
+        });
+    }
+
+    public void removeWidget(@Nonnull UUID uuid) {
+        uuidWidgetMap.compute(uuid, (key, value) -> {
+            if (value == null) {
+                throw new IllegalArgumentException("Can not delete widget with UUID: " + uuid + ". " +
+                        "Widget with such id do not exist");
+            } else {
+                widgetPositionStorage.remove(value);
+                widgetLayersStorage.remove(value);
+                return null;
             }
         });
     }
@@ -49,30 +84,9 @@ public class WidgetCache {
     public List<Widget> getAllWidgetsSortedByLayer() {
         return widgetLayersStorage.getAllWidgetsSortedByLayer();
     }
-
+    
     @Nonnull
-    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
-        
-        return uuidWidgetMap.compute(updateWidgetRequest.getUuid(), (uuid, existingWidget) -> {
-            if (existingWidget == null) {
-                throw new IllegalArgumentException("Widget with UUID: " + updateWidgetRequest.getUuid() + " was not found");
-            }
-            Widget updatedWidget = updateWidgetRequest.createUpdatedWidget(existingWidget);
-            
-            widgetLayersStorage.update(existingWidget, updatedWidget);
-            return updatedWidget;
-        });
-    }
-
-    public void removeWidget(@Nonnull UUID uuid) {
-        uuidWidgetMap.compute(uuid, (key, value) -> {
-            if (value == null) {
-                throw new IllegalArgumentException("Can not delete widget with UUID: " + uuid + ". " +
-                        "Widget with such id do not exist");
-            } else {
-                widgetLayersStorage.remove(value);
-                return null;
-            }
-        });
+    public List<Widget> getAllWidgetsInBound(Bound bound) {
+        return widgetPositionStorage.getWidgetsInBound(bound);
     }
 }

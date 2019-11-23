@@ -1,17 +1,19 @@
 package com.kabanov.widgets.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kabanov.widgets.controller.request.CreateWidgetRequest;
+import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
+import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.service.cache.WidgetCache;
 
@@ -35,17 +37,18 @@ public class WidgetService {
         widget.setHeight(createWidgetRequest.getHeight());
         widget.setWidth(createWidgetRequest.getWidth());
         widget.setZIndex(createWidgetRequest.getZIndex());
-        
+        widget.setLastModificationTime(LocalDateTime.now());
+
         return addWidgetToCache(widget);
     }
-    
+
     public Widget addWidgetToCache(Widget widget) {
-        return widgetCache.add(widget);   
+        return widgetCache.add(widget);
     }
 
     @Nullable
     public Widget getWidget(@Nonnull UUID uuid) {
-        return widgetCache.getWidget(uuid);     
+        return widgetCache.getWidget(uuid);
     }
 
     @Nonnull
@@ -54,9 +57,15 @@ public class WidgetService {
     }
 
     @Nonnull
-    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) throws ValidationException {
-        return widgetCache.updateWidget(updateWidgetRequest);    
+    public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
+        return widgetCache.updateWidget(updateWidgetRequest);
     }
+
     
-    
+    @Nonnull
+    public List<Widget> getAllWidgetsInBound(FilterRequest filterRequest) {
+        Bound bound = new Bound(filterRequest.getStartPoint(), filterRequest.getHeight(), filterRequest.getWidth());
+        return widgetCache.getAllWidgetsInBound(bound);
+    }
+
 }

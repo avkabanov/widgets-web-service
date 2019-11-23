@@ -27,7 +27,11 @@ public class WidgetUtils {
         return new Widget(UUID.randomUUID(), new Point(0, 0), 1, 1, zIndex, LocalDateTime.now());
     }
 
-    public static List<Widget> deepCopyAsList(Widget... widgets) {
+    public static List<Widget> deepCopyToList(Widget... widgets) {
         return Arrays.stream(widgets).map(Widget::new).collect(Collectors.toList());
+    }
+
+    public static Widget createWidget(Point startPoint, int height, int width) {
+        return new Widget(UUID.randomUUID(), startPoint, height, width, null, LocalDateTime.now());
     }
 }

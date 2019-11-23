@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,12 +66,7 @@ public class WidgetController {
     @ResponseBody
     public ResponseEntity<Widget> updateWidget(@Valid
                                                @RequestBody UpdateWidgetRequest updateRequest) {
-        try {
-            Widget result = widgetService.updateWidget(updateRequest);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (ValidationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Update widget error: " + e.getLocalizedMessage());
-        }
+        Widget result = widgetService.updateWidget(updateRequest);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

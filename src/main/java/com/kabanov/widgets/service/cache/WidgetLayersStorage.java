@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -14,6 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.springframework.stereotype.Component;
 
 import com.kabanov.widgets.domain.Widget;
+import com.kabanov.widgets.utils.LockUtils;
 
 /**
  * @author Kabanov Alexey
@@ -44,32 +46,26 @@ public class WidgetLayersStorage {
     }
 
     private void doInsertWithShift(Widget widget) {
-        boolean inserted;
+        AtomicBoolean inserted = new AtomicBoolean(false);
 
-        inserted = tryInsertOnEmptyIndex(widget);
-        if (!inserted) {
-            updateTreeLock.lock();
-            try {
+        inserted.set(tryInsertOnEmptyIndex(widget));
+        if (!inserted.get()) {
+            LockUtils.executeInLock(updateTreeLock, () -> {
                 // try again inside lock. Maybe z index of conflicted element has been changed in another thread
-                inserted = widgetsByLayer.add(widget);
-                if (!inserted) {
+                inserted.set(widgetsByLayer.add(widget));
+                if (!inserted.get()) {
                     shiftUpperWidgets(widget);
                     widgetsByLayer.add(widget);
                 }
-            } finally {
-                updateTreeLock.unlock();
-            }
+            });
         }
     }
 
     public void update(Widget oldWidget, Widget updatedWidget) {
-        updateTreeLock.lock();
-        try {
+        LockUtils.executeInLock(updateTreeLock, () -> {
             widgetsByLayer.remove(oldWidget);
             doInsertWithShift(updatedWidget);
-        } finally {
-            updateTreeLock.unlock();
-        }
+        });
     }
 
     /**
@@ -81,12 +77,7 @@ public class WidgetLayersStorage {
      * @return true if element was inserted
      */
     private boolean tryInsertOnEmptyIndex(Widget widget) {
-        accessTreeLock.lock();
-        try {
-            return widgetsByLayer.add(widget);
-        } finally {
-            accessTreeLock.unlock();
-        }
+        return LockUtils.executeInLock(accessTreeLock, () -> widgetsByLayer.add(widget));
     }
 
     private void shiftUpperWidgets(Widget widget) {
@@ -116,8 +107,8 @@ public class WidgetLayersStorage {
     }
 
     private void doInsertToBackground(Widget widget) {
-        widget.setZIndex(getBackgroundIndex()); 
-        
+        widget.setZIndex(getBackgroundIndex());
+
         boolean inserted;
         do {
             inserted = tryInsertOnEmptyIndex(widget);
@@ -129,29 +120,15 @@ public class WidgetLayersStorage {
     }
 
     private int getBackgroundIndex() {
-        accessTreeLock.lock();
-        try {
-            return widgetsByLayer.isEmpty() ? BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1;
-        } finally {
-            accessTreeLock.unlock();
-        }
+        return LockUtils.executeInLock(accessTreeLock,
+                () -> widgetsByLayer.isEmpty() ? BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1);
     }
 
     public List<Widget> getAllWidgetsSortedByLayer() {
-        accessTreeLock.lock();
-        try {
-            return new ArrayList<>(widgetsByLayer);
-        } finally {
-            accessTreeLock.unlock();
-        }
+        return LockUtils.executeInLock(accessTreeLock, () -> new ArrayList<>(widgetsByLayer));
     }
 
     public void remove(Widget value) {
-        accessTreeLock.lock();
-        try {
-            widgetsByLayer.remove(value);
-        } finally {
-            accessTreeLock.unlock();
-        }
+        LockUtils.executeInLock(accessTreeLock, () -> widgetsByLayer.remove(value));
     }
 }

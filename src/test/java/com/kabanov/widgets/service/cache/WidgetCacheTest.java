@@ -19,6 +19,7 @@ import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.test_utils.WidgetUtils;
 
+import static com.kabanov.widgets.test_utils.TimeUtils.sleepNanos;
 import static com.kabanov.widgets.test_utils.WidgetUtils.createWidget;
 
 /**
@@ -109,9 +110,18 @@ public class WidgetCacheTest {
         updateWidgetRequest.setzIndex(5);
 
         Widget expected = new Widget(uuid, new Point(2, 2), 3, 4, 5, LocalDateTime.now());
-
         widgetCache.add(widget);
+
+        // sleep minimum amount of time in order to change last modification time later
+        sleepNanos(1);
         Widget actual = widgetCache.updateWidget(updateWidgetRequest);
+        
+        // first of all we check last modification time
+        Assert.assertTrue(actual.getLastModificationTime().isAfter(widget.getLastModificationTime()));
+        
+        // after we checked it, we set actual last modification time to expected widget in order to compare 
+        // widget with #equals
+        expected.setLastModificationTime(actual.getLastModificationTime());
         Assert.assertEquals(expected, actual);
 
         Assert.assertEquals(expected, widgetCache.getWidget(uuid));
@@ -147,9 +157,9 @@ public class WidgetCacheTest {
 
     @Test
     public void shouldReturnAllWidgetsInBound() {
-        Widget first = createWidget(new Point(0, 0), 100, 100);
-        Widget second = createWidget(new Point(0, 50), 100, 100);
-        Widget third = createWidget(new Point(50, 50), 100, 100);
+        Widget first = createWidget(new Point(0, 0), 100, 100, 1);
+        Widget second = createWidget(new Point(0, 50), 100, 100, 2);
+        Widget third = createWidget(new Point(50, 50), 100, 100, 3);
         Bound bound = new Bound(new Point(0, 0), 150, 100);
 
         java.util.List<Widget> expected = WidgetUtils.deepCopyToList(first, second);

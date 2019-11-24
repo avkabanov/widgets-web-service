@@ -1,4 +1,4 @@
-# widgets-web-service
+# Widgets Web Service
 a web service that allows to work with widgets via HTTP REST API.
 
 ## API documentation
@@ -17,10 +17,10 @@ Application exposes following REST endpoints
 ## Structure overview 
 In order to optimize access to widgets, three classes to store widgets has been used: 
 
-#### com.kabanov.widgets.service.cache.WidgetCache 
-stores widgets in ConcurrentHashMap what allows to access widgets by id in a constant time;
+### com.kabanov.widgets.service.cache.WidgetCache 
+stores widgets in ConcurrentHashMap what allows to access widgets by id in a constant time.
 
-#### com.kabanov.widgets.service.cache.WidgetLayersStorage 
+### com.kabanov.widgets.service.cache.WidgetLayersStorage 
 contains logic of setting proper Z index, and shifting widgets with the same Z index. Under the hood all widgets
 stored in ConcurrentSkipListSet what allows to add and remove different widgets simultaneously. 
 
@@ -33,7 +33,7 @@ To achieve that synchronization I used ReentrantReadWriteLock.
  
 Due to the tree structure, we can get all widgets sorted by Z-layer in a constant time     
 
-#### com.kabanov.widgets.service.cache.WidgetPositionStorage 
+### com.kabanov.widgets.service.cache.WidgetPositionStorage 
 Stores all widgets sorted by their start point. 
 That gives performance when it's required to find all widgets that fell into the region. 
 

@@ -43,7 +43,7 @@ public class WidgetController {
         return new ResponseEntity<>(widget, HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/id/{uuid}")
+    @GetMapping(path = "/{uuid}")
     @ResponseBody
     public ResponseEntity<Widget> getWidget(@NotNull(message = "UUID can not be null")
                                             @PathVariable UUID uuid) {

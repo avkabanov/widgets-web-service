@@ -21,12 +21,12 @@ import com.kabanov.widgets.service.WidgetService;
  * @author Kabanov Alexey
  */
 @RestController
-@RequestMapping(path = "/filter")
+@RequestMapping(path = "/widget")
 public class FilterController {
     
     @Autowired WidgetService widgetService;
 
-    @GetMapping(path = "/inBounds")
+    @GetMapping(path = "/filter")
     @ResponseBody
     public ResponseEntity<List<Widget>> getAllWidgetsSortedByLayer(@Valid
                                                                    @RequestBody FilterRequest filterRequest) {

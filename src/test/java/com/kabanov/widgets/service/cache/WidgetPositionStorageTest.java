@@ -45,12 +45,12 @@ public class WidgetPositionStorageTest {
 
     @Test
     public void shouldReturnUpdatedWidgetsWhenWidgetIsUpdated() {
-        Widget widget = WidgetUtils.createWidget(new Point(0, 0), 100, 100);  
+        Widget widget = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
         Widget updated = new Widget(widget);
         updated.setStartPoint(new Point(100, 100));
 
         Bound bound = new Bound(new Point(0, 0), 100, 100);
-        
+
         positionStorage.add(widget);
         Assert.assertEquals(widget.getUuid(), positionStorage.getWidgetsInBound(bound).get(0).getUuid());
 
@@ -68,6 +68,20 @@ public class WidgetPositionStorageTest {
         Assert.assertEquals(widget.getUuid(), positionStorage.getWidgetsInBound(bound).get(0).getUuid());
 
         positionStorage.remove(widget);
-        Assert.assertEquals(Collections.emptyList(), positionStorage.getWidgetsInBound(bound));   
+        Assert.assertEquals(Collections.emptyList(), positionStorage.getWidgetsInBound(bound));
+    }
+
+    @Test
+    public void shouldReturnTwoWidgetsWhenWidgetsWithSameCoordinatesAdded() {
+        Widget first = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget second = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
+        Bound bound = new Bound(new Point(0, 0), 100, 100);
+
+        List<Widget> expected = WidgetUtils.deepCopyToList(first, second);
+        positionStorage.add(first);
+        positionStorage.add(second);
+
+        List<Widget> actual = positionStorage.getWidgetsInBound(bound);
+        Assert.assertEquals(expected, actual);
     }
 }

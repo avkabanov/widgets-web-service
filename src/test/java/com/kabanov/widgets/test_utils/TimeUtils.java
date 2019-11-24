@@ -5,9 +5,9 @@ package com.kabanov.widgets.test_utils;
  */
 public class TimeUtils {
 
-    public static void sleepNanos(int nanos) {
+    public static void sleepMillis(int nanos) {
 
-        long until = System.nanoTime() + nanos;
+        long until = System.nanoTime() + nanos * 1000000;
         long now;
         do {
             now = System.nanoTime();

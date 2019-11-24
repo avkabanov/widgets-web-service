@@ -63,9 +63,9 @@ public class WidgetController {
     }
 
     @PutMapping(path = "/update")
-    @ResponseBody
-    public ResponseEntity<Widget> updateWidget(@Valid
-                                               @RequestBody UpdateWidgetRequest updateRequest) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Widget> updateWidget(@RequestBody
+                                               @Valid UpdateWidgetRequest updateRequest) {
         Widget result = widgetService.updateWidget(updateRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

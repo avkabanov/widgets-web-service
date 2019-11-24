@@ -19,7 +19,7 @@ import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.test_utils.WidgetUtils;
 
-import static com.kabanov.widgets.test_utils.TimeUtils.sleepNanos;
+import static com.kabanov.widgets.test_utils.TimeUtils.sleepMillis;
 import static com.kabanov.widgets.test_utils.WidgetUtils.createWidget;
 
 /**
@@ -113,7 +113,7 @@ public class WidgetCacheTest {
         widgetCache.add(widget);
 
         // sleep minimum amount of time in order to change last modification time later
-        sleepNanos(1);
+        sleepMillis(1);
         Widget actual = widgetCache.updateWidget(updateWidgetRequest);
         
         // first of all we check last modification time

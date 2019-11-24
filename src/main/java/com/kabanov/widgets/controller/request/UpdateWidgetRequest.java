@@ -34,7 +34,21 @@ public class UpdateWidgetRequest {
 
     @Nullable
     private Integer zIndex;
-    
+
+    public UpdateWidgetRequest() {
+    }
+
+    public UpdateWidgetRequest(@NotNull(message = "UUID can not be null") UUID uuid, @Nullable Point startPoint,
+                               @Nullable @Positive(message = "Height must be positive")
+                                       Integer height, @Nullable @Positive(
+            message = "Width must be positive") Integer width, @Nullable Integer zIndex) {
+        this.uuid = uuid;
+        this.startPoint = startPoint;
+        this.height = height;
+        this.width = width;
+        this.zIndex = zIndex;
+    }
+
     public Widget createUpdatedWidget(@Nonnull Widget widget) {
         Widget updatedWidget = new Widget(widget);
         

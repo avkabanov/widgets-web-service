@@ -35,7 +35,7 @@ Due to the tree structure, we can get all widgets sorted by Z-layer in a constan
 
 ### com.kabanov.widgets.service.cache.WidgetPositionStorage 
 Stores all widgets sorted by their start point. 
-That gives performance when it's required to find all widgets that fell into the region. 
+That gives performance when it's required to find all widgets that fall into the region. 
 
 By iterating over sorted by start-point widgets, if start point (bottom-left point) of some widget is after top-right
 point of a region - that means this and all following widgets will not fall into the region. 

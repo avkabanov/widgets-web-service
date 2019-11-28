@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service.cache;
+package com.kabanov.widgets.dao.cache;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,18 +12,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nonnull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
+import com.kabanov.widgets.component.bounds.InBoundCalculator;
+import com.kabanov.widgets.component.bounds.InBoundCalculatorFactory;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.bounds.InBoundCalculator;
-import com.kabanov.widgets.service.bounds.InBoundCalculatorFactory;
 import com.kabanov.widgets.utils.LockUtils;
 
 /**
  * @author Kabanov Alexey
  */
-@Component
+@Repository
 public class WidgetPositionStorage {
 
     private InBoundCalculatorFactory inBoundCalculatorFactory;

@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service;
+package com.kabanov.widgets.service.widget;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import com.kabanov.widgets.controller.request.CreateWidgetRequest;
 import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
+import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.cache.WidgetCache;
 
 /**
  * @author Kabanov Alexey
@@ -26,8 +26,8 @@ public class WidgetService {
     private WidgetCache widgetCache;
 
     @Autowired
-    public WidgetService(WidgetCache widgetLayersStorage) {
-        this.widgetCache = widgetLayersStorage;
+    public WidgetService(WidgetCache widgetCache) {
+        this.widgetCache = widgetCache;
     }
 
     public Widget createWidget(@Nonnull CreateWidgetRequest createWidgetRequest) {
@@ -60,12 +60,13 @@ public class WidgetService {
     public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
         return widgetCache.updateWidget(updateWidgetRequest);
     }
-
     
     @Nonnull
     public List<Widget> getAllWidgetsInBound(FilterRequest filterRequest) {
         Bound bound = new Bound(filterRequest.getStartPoint(), filterRequest.getHeight(), filterRequest.getWidth());
         return widgetCache.getAllWidgetsInBound(bound);
     }
+    
+    
 
 }

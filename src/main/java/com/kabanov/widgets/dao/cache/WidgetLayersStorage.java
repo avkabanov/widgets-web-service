@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service.cache;
+package com.kabanov.widgets.dao.cache;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.utils.LockUtils;
@@ -20,7 +20,7 @@ import com.kabanov.widgets.utils.LockUtils;
 /**
  * @author Kabanov Alexey
  */
-@Component
+@Repository
 public class WidgetLayersStorage {
 
     private static final int BACKGROUND_INDEX = 0;

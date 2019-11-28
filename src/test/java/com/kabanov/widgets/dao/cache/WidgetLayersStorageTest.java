@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service.cache;
+package com.kabanov.widgets.dao.cache;
 
 import java.util.Arrays;
 import java.util.List;

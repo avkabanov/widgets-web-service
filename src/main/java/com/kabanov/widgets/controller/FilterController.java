@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.WidgetService;
+import com.kabanov.widgets.service.widget.WidgetService;
 
 /**
  * @author Kabanov Alexey

@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service.bounds;
+package com.kabanov.widgets.component.bounds;
 
 import org.springframework.stereotype.Component;
 

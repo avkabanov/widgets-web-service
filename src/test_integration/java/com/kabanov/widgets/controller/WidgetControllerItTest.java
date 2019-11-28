@@ -20,7 +20,7 @@ import com.kabanov.widgets.controller.request.CreateWidgetRequest;
 import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.service.WidgetService;
+import com.kabanov.widgets.service.widget.WidgetService;
 import com.kabanov.widgets.test_utils.WidgetUtils;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

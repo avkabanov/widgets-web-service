@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.kabanov.widgets.component.bounds.InBoundCalculator;
+import com.kabanov.widgets.component.bounds.InBoundCalculatorFactory;
 import com.kabanov.widgets.domain.Bound;
-import com.kabanov.widgets.service.bounds.InBoundCalculator;
-import com.kabanov.widgets.service.bounds.InBoundCalculatorFactory;
 
 /**
  * @author Kabanov Alexey

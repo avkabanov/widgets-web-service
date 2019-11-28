@@ -5,11 +5,19 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+
 /**
  * @author Kabanov Alexey
  */
+@Table(indexes = { @Index(name = "IDX_START_POINT_SUM", columnList = "startPointSum") })
+@Entity
 public class Widget {
-
+    @Id
     private UUID uuid;
     private Point startPoint;
     private int height;
@@ -17,6 +25,8 @@ public class Widget {
     private Integer zIndex;
     private LocalDateTime lastModificationTime;
 
+    private Integer startPointSum;
+    
     public Widget() {
     }
 
@@ -37,7 +47,14 @@ public class Widget {
         this.width = widget.width;
         this.zIndex = widget.zIndex;
         this.lastModificationTime = widget.lastModificationTime;
-        
+    }
+    
+    @Column
+    public int getStartPointSum() {
+        if (startPointSum == null) {
+            startPointSum = startPoint.x + startPoint.y;
+        }
+        return startPointSum;
     }
     
     public UUID getUuid() {
@@ -95,7 +112,7 @@ public class Widget {
         Widget widget = (Widget) o;
         return height == widget.height &&
                 width == widget.width &&
-                zIndex == widget.zIndex &&
+                Objects.equals(zIndex, widget.zIndex) &&
                 Objects.equals(uuid, widget.uuid) &&
                 Objects.equals(startPoint, widget.startPoint) &&
                 Objects.equals(lastModificationTime, widget.lastModificationTime);

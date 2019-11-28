@@ -1,4 +1,4 @@
-package com.kabanov.widgets.service.cache;
+package com.kabanov.widgets.dao.cache;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,17 +9,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
+import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 
 /**
  * @author Kabanov Alexey
  */
-@Component
-public class WidgetCache {
+public class InMemoryWidgetCache implements WidgetCache {
 
     private WidgetLayersStorage widgetLayersStorage;
     private WidgetPositionStorage widgetPositionStorage;
@@ -27,13 +26,14 @@ public class WidgetCache {
     private ConcurrentHashMap<UUID, Widget> uuidWidgetMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public WidgetCache(WidgetLayersStorage widgetLayersStorage,
-                       WidgetPositionStorage widgetPositionStorage) {
+    public InMemoryWidgetCache(WidgetLayersStorage widgetLayersStorage,
+                               WidgetPositionStorage widgetPositionStorage) {
         this.widgetLayersStorage = widgetLayersStorage;
         this.widgetPositionStorage = widgetPositionStorage;
     }
 
     @Nonnull
+    @Override
     public Widget add(@Nonnull Widget widget) {
         return uuidWidgetMap.compute(widget.getUuid(), (uuid, currentValue) -> {
             if (currentValue != null) {
@@ -47,6 +47,7 @@ public class WidgetCache {
         });
     }
 
+    @Override
     @Nonnull
     public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
         return uuidWidgetMap.compute(updateWidgetRequest.getUuid(), (uuid, existingWidget) -> {
@@ -62,6 +63,7 @@ public class WidgetCache {
         });
     }
 
+    @Override
     public void removeWidget(@Nonnull UUID uuid) {
         uuidWidgetMap.compute(uuid, (key, value) -> {
             if (value == null) {
@@ -75,16 +77,19 @@ public class WidgetCache {
         });
     }
 
+    @Override
     @Nullable
     public Widget getWidget(@Nonnull UUID uuid) {
         return uuidWidgetMap.get(uuid);
     }
 
+    @Override
     @Nonnull
     public List<Widget> getAllWidgetsSortedByLayer() {
         return widgetLayersStorage.getAllWidgetsSortedByLayer();
     }
-    
+
+    @Override
     @Nonnull
     public List<Widget> getAllWidgetsInBound(Bound bound) {
         return widgetPositionStorage.getWidgetsInBound(bound);

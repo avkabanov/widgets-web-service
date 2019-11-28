@@ -62,7 +62,7 @@ public class DatabaseWidgetCache implements WidgetCache {
     }
 
     @Override
-    public void removeWidget(@Nonnull UUID uuid) {
+    public void deleteWidget(@Nonnull UUID uuid) {
         widgetRepository.deleteById(uuid);
     }
 

@@ -71,14 +71,13 @@ public class WidgetController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/delete/{}")
-    public ResponseEntity<Widget> deleteWidget(@NotNull(message = "UUID can not be null")
+    @DeleteMapping(path = "/delete/{uuid}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteWidget(@NotNull(message = "UUID can not be null")
                                                    @PathVariable UUID uuid) {
-        Widget result = null;
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        widgetService.deleteWidget(uuid);
     }
-    
-    // TODO add delete method to readme
     // remove @ResponseStatus(value = HttpStatus.OK) where not required
+    // TODO should remove widget return anything?
     
 }

@@ -60,13 +60,14 @@ public class WidgetService {
     public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
         return widgetCache.updateWidget(updateWidgetRequest);
     }
-    
+
     @Nonnull
     public List<Widget> getAllWidgetsInBound(FilterRequest filterRequest) {
         Bound bound = new Bound(filterRequest.getStartPoint(), filterRequest.getHeight(), filterRequest.getWidth());
         return widgetCache.getAllWidgetsInBound(bound);
     }
-    
-    
 
+    public void deleteWidget(@Nonnull UUID uuid) {
+        widgetCache.deleteWidget(uuid);
+    }
 }

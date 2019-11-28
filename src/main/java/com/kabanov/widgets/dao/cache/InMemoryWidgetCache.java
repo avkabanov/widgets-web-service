@@ -64,7 +64,7 @@ public class InMemoryWidgetCache implements WidgetCache {
     }
 
     @Override
-    public void removeWidget(@Nonnull UUID uuid) {
+    public void deleteWidget(@Nonnull UUID uuid) {
         uuidWidgetMap.compute(uuid, (key, value) -> {
             if (value == null) {
                 throw new IllegalArgumentException("Can not delete widget with UUID: " + uuid + ". " +

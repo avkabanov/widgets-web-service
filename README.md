@@ -13,6 +13,7 @@ Application exposes following REST endpoints
 | GET         | /widget/all            | All widgets                        | Retrieves all widgets                                          |
 | PUT         | /widget/update         | Updated widget                     | Updates the widget                                             |
 | GET         | /widget/filter         | Widgets that fall into the region  | Return only the widgets that fall entirely into the region     |
+| DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                |
 
 ## Structure overview 
 In order to optimize access to widgets, three classes to store widgets has been used: 

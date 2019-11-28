@@ -152,7 +152,7 @@ public class WidgetLocalCacheTest {
         widgetLocalCache.add(one);
         widgetLocalCache.add(two);
 
-        widgetLocalCache.removeWidget(two.getUuid());
+        widgetLocalCache.deleteWidget(two.getUuid());
 
         Assert.assertNull(widgetLocalCache.getWidget(two.getUuid()));
         Assert.assertEquals(expected, widgetLocalCache.getAllWidgetsSortedByLayer());

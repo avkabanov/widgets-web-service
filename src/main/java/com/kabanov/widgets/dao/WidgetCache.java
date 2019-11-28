@@ -32,7 +32,7 @@ public interface WidgetCache {
     @Nonnull
     Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest);
 
-    void removeWidget(@Nonnull UUID uuid);
+    void deleteWidget(@Nonnull UUID uuid);
 
     @Nullable
     Widget getWidget(@Nonnull UUID uuid);

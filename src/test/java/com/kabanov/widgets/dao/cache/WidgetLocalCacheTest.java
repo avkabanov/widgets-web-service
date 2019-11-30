@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.test_utils.WidgetUtils;
+import com.kabanov.widgets.test_utils.WidgetTestUtils;
 
 import static com.kabanov.widgets.test_utils.TimeUtils.sleepMillis;
-import static com.kabanov.widgets.test_utils.WidgetUtils.createWidget;
+import static com.kabanov.widgets.test_utils.WidgetTestUtils.createWidget;
 
 /**
  * @author Kabanov Alexey
@@ -34,6 +35,26 @@ import static com.kabanov.widgets.test_utils.WidgetUtils.createWidget;
 public class WidgetLocalCacheTest {
 
     @Autowired private WidgetCache widgetLocalCache;
+
+    @Before
+    public void setup () {
+        widgetLocalCache.deleteAll();
+        Assert.assertEquals(0, widgetLocalCache.getAllWidgetsSortedByLayer().size());
+    }
+    
+    @Test
+    public void tt() {
+        widgetLocalCache.add(createWidget(1));   
+        widgetLocalCache.add(createWidget(2));   
+        widgetLocalCache.add(createWidget(3));   
+        widgetLocalCache.add(createWidget(4));   
+        widgetLocalCache.add(createWidget(6));   
+        widgetLocalCache.add(createWidget(2));
+
+        List<Widget> allWidgetsSortedByLayer = widgetLocalCache.getAllWidgetsSortedByLayer();
+        System.out.println(allWidgetsSortedByLayer);
+        
+    }
 
     @Test
     public void addShouldReturnNewlyCreatedWidget() {
@@ -89,7 +110,7 @@ public class WidgetLocalCacheTest {
         Widget three = createWidget(3);
         Widget four = createWidget(4);
 
-        List<Widget> expected = WidgetUtils.deepCopyToList(one, two, three, four);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(one, two, three, four);
 
         widgetLocalCache.add(three);
         widgetLocalCache.add(two);
@@ -165,7 +186,7 @@ public class WidgetLocalCacheTest {
         Widget third = createWidget(new Point(50, 50), 100, 100, 3);
         Bound bound = new Bound(new Point(0, 0), 150, 100);
 
-        java.util.List<Widget> expected = WidgetUtils.deepCopyToList(first, second);
+        java.util.List<Widget> expected = WidgetTestUtils.deepCopyToList(first, second);
 
         widgetLocalCache.add(first);
         widgetLocalCache.add(second);

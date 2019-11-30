@@ -12,9 +12,9 @@ import com.kabanov.widgets.domain.Widget;
 /**
  * @author Kabanov Alexey
  */
-public class WidgetUtils {
+public class WidgetTestUtils {
 
-    private WidgetUtils() {
+    private WidgetTestUtils() {
     }
 
     public static Widget createWidget(Widget widget, Integer zIndex) {

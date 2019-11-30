@@ -23,7 +23,7 @@ import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.service.widget.WidgetService;
-import com.kabanov.widgets.test_utils.WidgetUtils;
+import com.kabanov.widgets.test_utils.WidgetTestUtils;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -66,7 +66,7 @@ public class WidgetControllerItTest {
 
     @Test
     public void shouldGetWidgetByIdWhenReceivedRequestToGet() throws Exception {
-        Widget widget = WidgetUtils.createWidget(1);
+        Widget widget = WidgetTestUtils.createWidget(1);
         widgetService.addWidgetToCache(widget);
 
         MockHttpServletRequestBuilder request = get("/widget/" + widget.getUuid());
@@ -82,9 +82,9 @@ public class WidgetControllerItTest {
 
     @Test
     public void shouldGetAllWidgetByIdWhenReceivedRequestToGet() throws Exception {
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(1));
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(2));
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(3));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(1));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(2));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(3));
 
         MockHttpServletRequestBuilder request = get("/widget/all");
 
@@ -100,7 +100,7 @@ public class WidgetControllerItTest {
 
     @Test
     public void shouldWidgetBeUpdatedWhenUpdateIsCalled() throws Exception {
-        Widget widget = WidgetUtils.createWidget(1);
+        Widget widget = WidgetTestUtils.createWidget(1);
         widgetService.addWidgetToCache(widget);
 
         UpdateWidgetRequest updateWidgetRequest = new UpdateWidgetRequest();
@@ -126,8 +126,8 @@ public class WidgetControllerItTest {
 
     @Test
     public void shouldGetAllWidgetWithinTheBoundWhenFilterMethodIsCalled() throws Exception {
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(new Point(0, 0), 50, 50, 50));
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(new Point(150, 150), 100, 100));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(new Point(0, 0), 50, 50, 50));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(new Point(150, 150), 100, 100));
 
         FilterRequest filterRequest = new FilterRequest();
         filterRequest.setStartPoint(new Point(0, 0));
@@ -150,9 +150,9 @@ public class WidgetControllerItTest {
 
     @Test
     public void shouldRemoveWidgetWhenRemoveItCalled() throws Exception {
-        Widget widgetToRemove = WidgetUtils.createWidget(new Point(0, 0), 50, 50, 50);
+        Widget widgetToRemove = WidgetTestUtils.createWidget(new Point(0, 0), 50, 50, 50);
         widgetService.addWidgetToCache(widgetToRemove);
-        widgetService.addWidgetToCache(WidgetUtils.createWidget(new Point(150, 150), 100, 100));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(new Point(150, 150), 100, 100));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(
                 "/widget/delete/" + widgetToRemove.getUuid())

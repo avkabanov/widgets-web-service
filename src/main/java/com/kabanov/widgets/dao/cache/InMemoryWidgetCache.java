@@ -94,4 +94,12 @@ public class InMemoryWidgetCache implements WidgetCache {
     public List<Widget> getAllWidgetsInBound(Bound bound) {
         return widgetPositionStorage.getWidgetsInBound(bound);
     }
+
+    @Override
+    public void deleteAll() {
+        // TODO Fix
+        //widgetLayersStorage.
+        //widgetPositionStorage.
+        //uuidWidgetMap.    
+    }
 }

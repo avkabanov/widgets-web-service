@@ -15,6 +15,8 @@ import com.kabanov.widgets.domain.Widget;
  */
 public interface WidgetCache {
 
+    int DEFAULT_BACKGROUND_INDEX = 0;
+
     /**
      * 
      * @param widget
@@ -42,4 +44,6 @@ public interface WidgetCache {
 
     @Nonnull
     List<Widget> getAllWidgetsInBound(Bound bound);
+
+    void deleteAll();
 }

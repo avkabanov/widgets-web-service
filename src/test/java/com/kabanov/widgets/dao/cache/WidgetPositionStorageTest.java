@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.test_utils.WidgetUtils;
+import com.kabanov.widgets.test_utils.WidgetTestUtils;
 
 /**
  * @author Kabanov Alexey
@@ -28,12 +28,12 @@ public class WidgetPositionStorageTest {
 
     @Test
     public void shouldReturnOnlyWidgetsInBound() {
-        Widget first = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
-        Widget second = WidgetUtils.createWidget(new Point(0, 50), 100, 100);
-        Widget third = WidgetUtils.createWidget(new Point(50, 50), 100, 100);
+        Widget first = WidgetTestUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget second = WidgetTestUtils.createWidget(new Point(0, 50), 100, 100);
+        Widget third = WidgetTestUtils.createWidget(new Point(50, 50), 100, 100);
         Bound bound = new Bound(new Point(0, 0), 150, 100);
 
-        java.util.List<Widget> expected = WidgetUtils.deepCopyToList(first, second);
+        java.util.List<Widget> expected = WidgetTestUtils.deepCopyToList(first, second);
 
         positionStorage.add(first);
         positionStorage.add(second);
@@ -45,7 +45,7 @@ public class WidgetPositionStorageTest {
 
     @Test
     public void shouldReturnUpdatedWidgetsWhenWidgetIsUpdated() {
-        Widget widget = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget widget = WidgetTestUtils.createWidget(new Point(0, 0), 100, 100);
         Widget updated = new Widget(widget);
         updated.setStartPoint(new Point(100, 100));
 
@@ -60,7 +60,7 @@ public class WidgetPositionStorageTest {
 
     @Test
     public void shouldNotReturnWidgetWhenWidgetIsRemoved() {
-        Widget widget = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget widget = WidgetTestUtils.createWidget(new Point(0, 0), 100, 100);
 
         Bound bound = new Bound(new Point(0, 0), 100, 100);
 
@@ -73,11 +73,11 @@ public class WidgetPositionStorageTest {
 
     @Test
     public void shouldReturnTwoWidgetsWhenWidgetsWithSameCoordinatesAdded() {
-        Widget first = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
-        Widget second = WidgetUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget first = WidgetTestUtils.createWidget(new Point(0, 0), 100, 100);
+        Widget second = WidgetTestUtils.createWidget(new Point(0, 0), 100, 100);
         Bound bound = new Bound(new Point(0, 0), 100, 100);
 
-        List<Widget> expected = WidgetUtils.deepCopyToList(first, second);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(first, second);
         positionStorage.add(first);
         positionStorage.add(second);
 

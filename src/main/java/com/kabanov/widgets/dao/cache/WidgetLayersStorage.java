@@ -14,16 +14,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.springframework.stereotype.Repository;
 
+import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.utils.LockUtils;
+import com.kabanov.widgets.utils.WidgetUtils;
 
 /**
  * @author Kabanov Alexey
  */
 @Repository
 public class WidgetLayersStorage {
-
-    private static final int BACKGROUND_INDEX = 0;
 
     private ConcurrentSkipListSet<Widget> widgetsByLayer = new ConcurrentSkipListSet<>(
             Comparator.comparingInt(Widget::getZIndex));
@@ -33,16 +33,12 @@ public class WidgetLayersStorage {
     private Lock accessTreeLock = readWriteLock.readLock();
 
     public Widget add(Widget widget) {
-        if (isBackgroundWidget(widget)) {
+        if (WidgetUtils.isBackgroundWidget(widget)) {
             doInsertToBackground(widget);
         } else {
             doInsertWithShift(widget);
         }
         return widget;
-    }
-
-    private boolean isBackgroundWidget(Widget widget) {
-        return widget.getZIndex() == null;
     }
 
     private void doInsertWithShift(Widget widget) {
@@ -121,7 +117,7 @@ public class WidgetLayersStorage {
 
     private int getBackgroundIndex() {
         return LockUtils.executeInLock(accessTreeLock,
-                () -> widgetsByLayer.isEmpty() ? BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1);
+                () -> widgetsByLayer.isEmpty() ? WidgetCache.DEFAULT_BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1);
     }
 
     public List<Widget> getAllWidgetsSortedByLayer() {

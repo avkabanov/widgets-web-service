@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.test_utils.WidgetUtils;
+import com.kabanov.widgets.test_utils.WidgetTestUtils;
 
 /**
  * @author Kabanov Alexey
@@ -26,8 +26,8 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void addShouldReturnNewlyCreatedWidget() {
-        Widget widget = WidgetUtils.createWidget(2);
-        Widget expected = WidgetUtils.createWidget(widget, 2);
+        Widget widget = WidgetTestUtils.createWidget(2);
+        Widget expected = WidgetTestUtils.createWidget(widget, 2);
 
         Widget actual = widgetLayersStorage.add(widget);
 
@@ -36,8 +36,8 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void addShouldReturnNewlyCreatedBackgroundWidget() {
-        Widget widget = WidgetUtils.createWidget(null);
-        Widget expected = WidgetUtils.createWidget(widget, 0);
+        Widget widget = WidgetTestUtils.createWidget(null);
+        Widget expected = WidgetTestUtils.createWidget(widget, 0);
 
         Widget actual = widgetLayersStorage.add(widget);
 
@@ -46,12 +46,12 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void shouldReturnWidgetInZOrderWhenAddedInRandomOrder() {
-        Widget one = WidgetUtils.createWidget(1);
-        Widget two = WidgetUtils.createWidget(2);
-        Widget three = WidgetUtils.createWidget(3);
-        Widget four = WidgetUtils.createWidget(4);
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
 
-        List<Widget> expected = WidgetUtils.deepCopyToList(one, two, three, four);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(one, two, three, four);
 
         widgetLayersStorage.add(three);
         widgetLayersStorage.add(two);
@@ -64,19 +64,19 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void shouldShiftAllNextWidgetsWhenWidgetWithSameZIndexIsAdded() {
-        Widget one = WidgetUtils.createWidget(1);
-        Widget two = WidgetUtils.createWidget(2);
-        Widget three = WidgetUtils.createWidget(3);
-        Widget four = WidgetUtils.createWidget(4);
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
 
-        Widget insertedInPlaceOfTwo = WidgetUtils.createWidget(2);
+        Widget insertedInPlaceOfTwo = WidgetTestUtils.createWidget(2);
 
         List<Widget> expected = Arrays.asList(
-                WidgetUtils.createWidget(one, 1),
-                WidgetUtils.createWidget(insertedInPlaceOfTwo, 2),
-                WidgetUtils.createWidget(two, 3),
-                WidgetUtils.createWidget(three, 4),
-                WidgetUtils.createWidget(four, 5)
+                WidgetTestUtils.createWidget(one, 1),
+                WidgetTestUtils.createWidget(insertedInPlaceOfTwo, 2),
+                WidgetTestUtils.createWidget(two, 3),
+                WidgetTestUtils.createWidget(three, 4),
+                WidgetTestUtils.createWidget(four, 5)
         );
 
         widgetLayersStorage.add(one);
@@ -92,19 +92,19 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void shouldMoveBGWidgetsToToBackgroundWhenBackgroundWidgetIsCreated() {
-        Widget minusOne = WidgetUtils.createWidget(-1);
-        Widget one = WidgetUtils.createWidget(1);
-        Widget four = WidgetUtils.createWidget(4);
+        Widget minusOne = WidgetTestUtils.createWidget(-1);
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget four = WidgetTestUtils.createWidget(4);
 
-        Widget firstBg = WidgetUtils.createWidget(null);
-        Widget secondBg = WidgetUtils.createWidget(null);
+        Widget firstBg = WidgetTestUtils.createWidget(null);
+        Widget secondBg = WidgetTestUtils.createWidget(null);
 
         List<Widget> expected = Arrays.asList(
-                WidgetUtils.createWidget(secondBg, -3),
-                WidgetUtils.createWidget(firstBg, -2),
-                WidgetUtils.createWidget(minusOne, -1),
-                WidgetUtils.createWidget(one, 1),
-                WidgetUtils.createWidget(four, 4)
+                WidgetTestUtils.createWidget(secondBg, -3),
+                WidgetTestUtils.createWidget(firstBg, -2),
+                WidgetTestUtils.createWidget(minusOne, -1),
+                WidgetTestUtils.createWidget(one, 1),
+                WidgetTestUtils.createWidget(four, 4)
         );
 
         widgetLayersStorage.add(minusOne);
@@ -120,8 +120,8 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void shouldWidgetBeRemovedWhenRemoveIsCalled() {
-        Widget one = WidgetUtils.createWidget(1);
-        Widget two = WidgetUtils.createWidget(2);
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
         
         List<Widget> expected = Arrays.asList(two);
         
@@ -135,8 +135,8 @@ public class WidgetLayersStorageTest {
 
     @Test
     public void shouldBeInitialPositionZeroForBackgroundWidgets() {
-        Widget widget = WidgetUtils.createWidget(null);
-        List<Widget> expected = Arrays.asList(WidgetUtils.createWidget(widget, 0));
+        Widget widget = WidgetTestUtils.createWidget(null);
+        List<Widget> expected = Arrays.asList(WidgetTestUtils.createWidget(widget, 0));
 
         widgetLayersStorage.add(widget);
 

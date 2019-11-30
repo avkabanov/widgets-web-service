@@ -14,14 +14,21 @@ import javax.persistence.Table;
 /**
  * @author Kabanov Alexey
  */
-@Table(indexes = { @Index(name = "IDX_START_POINT_SUM", columnList = "startPointSum") })
-@Entity
+// TODO double check indexes!!
+@Table(name = Widget.TABLE_NAME, indexes = { @Index(name = "IDX_START_POINT_SUM", columnList = "startPointSum") })
+@Entity(name = Widget.TABLE_NAME)
 public class Widget {
+    
+    public static final String TABLE_NAME= "WIDGET";
+    public static final String Z_INDEX_COLUMN_NAME = "zIndex";
+    
     @Id
     private UUID uuid;
     private Point startPoint;
     private int height;
     private int width;
+
+    @Column(name=Z_INDEX_COLUMN_NAME)
     private Integer zIndex;
     private LocalDateTime lastModificationTime;
 

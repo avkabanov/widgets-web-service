@@ -19,6 +19,7 @@ import com.kabanov.widgets.component.bounds.InBoundCalculatorFactory;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.utils.LockUtils;
+import com.kabanov.widgets.utils.PointUtils;
 
 /**
  * @author Kabanov Alexey
@@ -60,13 +61,12 @@ public class WidgetPositionStorage {
     public List<Widget> getWidgetsInBound(@Nonnull Bound bounds) {
         List<Widget> result = new ArrayList<>();
         InBoundCalculator inBoundCalculator = inBoundCalculatorFactory.getInBoundCalculator(bounds);
-        Point upperRightPoint = new Point(bounds.getLowerLeftPoint().x + bounds.getWidth(),
-                bounds.getLowerLeftPoint().y + bounds.getHeight());
-        int sumOfUpperRightCoordinates = getSumOfCoordinates(upperRightPoint);
+        Point upperRightPoint = bounds.calculateUpperRightPoint();
+        int sumOfUpperRightCoordinates = PointUtils.getSumOfCoordinates(upperRightPoint);
 
         LockUtils.executeInLock(accessTreeLock, () -> {
             for (Widget current : widgetsByPosition) {
-                if (getSumOfCoordinates(current.getStartPoint()) > sumOfUpperRightCoordinates) {
+                if (PointUtils.getSumOfCoordinates(current.getStartPoint()) > sumOfUpperRightCoordinates) {
                     break;
                 }
                 if (inBoundCalculator.isInBound(current.getStartPoint(), current.getHeight(), current.getWidth())) {
@@ -75,9 +75,5 @@ public class WidgetPositionStorage {
             }
         });
         return result;
-    }
-
-    private int getSumOfCoordinates(Point point) {
-        return point.x + point.y;
     }
 }

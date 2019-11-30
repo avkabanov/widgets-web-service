@@ -3,7 +3,9 @@ package com.kabanov.widgets.dao.cache;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -165,6 +167,14 @@ public class WidgetLocalCacheTest {
         Assert.assertEquals(expected, widgetLocalCache.getAllWidgetsSortedByLayer());
     }
 
+    // TODO remove test
+    @Test
+    public void tt() {
+        widgetLocalCache.add(createWidget(1));
+        widgetLocalCache.add(createWidget(1));
+        System.out.println(1);
+    }
+
     @Test
     public void shouldReturnAllWidgetsInBound() {
         Widget first = createWidget(new Point(0, 0), 100, 100, 1);
@@ -172,12 +182,12 @@ public class WidgetLocalCacheTest {
         Widget third = createWidget(new Point(50, 50), 100, 100, 3);
         Bound bound = new Bound(new Point(0, 0), 150, 100);
 
-        java.util.List<Widget> expected = WidgetTestUtils.deepCopyToList(first, second);
+        Set<Widget> expected = new HashSet<>(WidgetTestUtils.deepCopyToList(first, second));
 
         widgetLocalCache.add(first);
         widgetLocalCache.add(second);
         widgetLocalCache.add(third);
-        List<Widget> actual = widgetLocalCache.getAllWidgetsInBound(bound);
+        Set<Widget> actual = new HashSet<>(widgetLocalCache.getAllWidgetsInBound(bound));
 
         Assert.assertEquals(expected, actual);
     }

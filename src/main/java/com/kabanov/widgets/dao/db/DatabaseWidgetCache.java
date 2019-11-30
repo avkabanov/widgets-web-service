@@ -1,6 +1,8 @@
 package com.kabanov.widgets.dao.db;
 
+import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,8 +14,8 @@ import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +26,9 @@ import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
-import com.kabanov.widgets.utils.WidgetUtils;
+import com.kabanov.widgets.utils.PointUtils;
 
+import static com.kabanov.widgets.utils.PointUtils.getSumOfCoordinates;
 
 /**
  * @author Kabanov Alexey
@@ -69,7 +72,7 @@ public class DatabaseWidgetCache implements WidgetCache {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     private void doInsertWithShift(Widget widget) {
         checkUuidDoesNotExist(widget);
-        
+
         Widget conflictedWidget = widgetRepository.findOneByZIndex(widget.getZIndex());
 
         if (conflictedWidget == null) {
@@ -148,7 +151,7 @@ public class DatabaseWidgetCache implements WidgetCache {
         query.setMaxResults(1);
 
         List result = query.getResultList();
-        return result.isEmpty() ? null : (Integer)result.get(0) ;
+        return result.isEmpty() ? null : (Integer) result.get(0);
 
     }
 
@@ -189,11 +192,36 @@ public class DatabaseWidgetCache implements WidgetCache {
     @Override
     public List<Widget> getAllWidgetsInBound(Bound bound) {
         InBoundCalculator inBoundCalculator = inBoundCalculatorFactory.getInBoundCalculator(bound);
+        Point upperRightPoint = bound.calculateUpperRightPoint();
+        int sumOfUpperRightCoordinates = getSumOfCoordinates(upperRightPoint);
+        
+        List<Widget> result = new ArrayList<>();
+        int currentPage = 0;
+        while (true) {
+            Page<Widget> page = findAllSortedByStartPointSum(currentPage++);
+            if (page == null) break;
 
-        Slice<Widget> result = widgetRepository.findAllByStartPointSum(Pageable.unpaged());
-        ;
+            for (Widget current : page.getContent()) {
+                if (PointUtils.getSumOfCoordinates(current.getStartPoint()) > sumOfUpperRightCoordinates) {
+                    break;
+                }
+                if (inBoundCalculator.isInBound(current.getStartPoint(), current.getHeight(), current.getWidth())) {
+                    result.add(current);
+                }
+            }
+        }
+        return result;
+    }
 
-        return null;
+    @Nullable
+    private Page<Widget> findAllSortedByStartPointSum(int currentPage) {
+        final PageRequest pageRequest = PageRequest.of(currentPage, 1, Sort.by("startPointSum").ascending());
+        Page<Widget> page = widgetRepository.findAll(pageRequest);
+
+        if (!page.hasContent()) {
+            return null;
+        }
+        return page;
     }
 
     @Override

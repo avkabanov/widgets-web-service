@@ -46,4 +46,9 @@ public class Bound {
     public void setWidth(int width) {
         this.width = width;
     }
+    
+    public Point calculateUpperRightPoint() {
+        return new Point(getLowerLeftPoint().x + getWidth(),
+                getLowerLeftPoint().y + getHeight()); 
+    }
 }

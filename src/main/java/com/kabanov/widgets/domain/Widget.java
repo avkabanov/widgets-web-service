@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import com.kabanov.widgets.utils.PointUtils;
+
 /**
  * @author Kabanov Alexey
  */
@@ -27,11 +29,13 @@ public class Widget {
     private Point startPoint;
     private int height;
     private int width;
-
-    @Column(name=Z_INDEX_COLUMN_NAME)
+                         
+    // TODO check column unique
+    @Column(unique = true, name=Z_INDEX_COLUMN_NAME)  
     private Integer zIndex;
     private LocalDateTime lastModificationTime;
 
+    @Column(name = "startPointSum")
     private Integer startPointSum;
     
     public Widget() {
@@ -41,6 +45,7 @@ public class Widget {
                   LocalDateTime lastModificationTime) {
         this.uuid = uuid;
         this.startPoint = startPoint;
+        startPointSum = PointUtils.getSumOfCoordinates(startPoint);
         this.height = height;
         this.width = width;
         this.zIndex = zIndex;
@@ -50,18 +55,11 @@ public class Widget {
     public Widget(Widget widget) {
         this.uuid = widget.uuid;
         this.startPoint = widget.startPoint;
+        startPointSum = PointUtils.getSumOfCoordinates(startPoint);
         this.height = widget.height;
         this.width = widget.width;
         this.zIndex = widget.zIndex;
         this.lastModificationTime = widget.lastModificationTime;
-    }
-    
-    @Column
-    public int getStartPointSum() {
-        if (startPointSum == null) {
-            startPointSum = startPoint.x + startPoint.y;
-        }
-        return startPointSum;
     }
     
     public UUID getUuid() {
@@ -78,6 +76,7 @@ public class Widget {
 
     public void setStartPoint(Point startPoint) {
         this.startPoint = startPoint;
+        startPointSum = PointUtils.getSumOfCoordinates(startPoint);
     }
 
     public int getHeight() {
@@ -110,6 +109,10 @@ public class Widget {
 
     public void setLastModificationTime(LocalDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
+    }
+
+    public Integer getStartPointSum() {
+        return startPointSum;
     }
 
     @Override

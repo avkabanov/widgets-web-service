@@ -59,8 +59,17 @@ public class DatabaseWidgetCache implements WidgetCache {
         return widgetRepository.save(widget);
     }
 
+    private void checkUuidDoesNotExist(Widget widget) {
+        Widget existingWidget = getWidget(widget.getUuid());
+        if (existingWidget != null) {
+            throw new IllegalArgumentException("Widget with given UUID already exist: " + existingWidget);
+        }
+    }
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     private void doInsertWithShift(Widget widget) {
+        checkUuidDoesNotExist(widget);
+        
         Widget conflictedWidget = widgetRepository.findOneByZIndex(widget.getZIndex());
 
         if (conflictedWidget == null) {
@@ -166,7 +175,8 @@ public class DatabaseWidgetCache implements WidgetCache {
     @Nullable
     @Override
     public Widget getWidget(@Nonnull UUID uuid) {
-        return widgetRepository.getOne(uuid);
+        Optional<Widget> result = widgetRepository.findById(uuid);
+        return result.orElse(null);
     }
 
     @Nonnull

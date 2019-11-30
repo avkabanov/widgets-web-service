@@ -43,20 +43,6 @@ public class WidgetLocalCacheTest {
     }
     
     @Test
-    public void tt() {
-        widgetLocalCache.add(createWidget(1));   
-        widgetLocalCache.add(createWidget(2));   
-        widgetLocalCache.add(createWidget(3));   
-        widgetLocalCache.add(createWidget(4));   
-        widgetLocalCache.add(createWidget(6));   
-        widgetLocalCache.add(createWidget(2));
-
-        List<Widget> allWidgetsSortedByLayer = widgetLocalCache.getAllWidgetsSortedByLayer();
-        System.out.println(allWidgetsSortedByLayer);
-        
-    }
-
-    @Test
     public void addShouldReturnNewlyCreatedWidget() {
         Widget widget = createWidget(2);
         Widget expected = createWidget(widget, 2);

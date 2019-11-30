@@ -27,6 +27,7 @@ import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
 import com.kabanov.widgets.domain.Widget;
 import com.kabanov.widgets.utils.PointUtils;
+import com.kabanov.widgets.utils.WidgetUtils;
 
 import static com.kabanov.widgets.utils.PointUtils.getSumOfCoordinates;
 
@@ -52,14 +53,14 @@ public class DatabaseWidgetCache implements WidgetCache {
     @Nonnull
     @Override
     public Widget add(@Nonnull Widget widget) {
+        Widget result; 
         if (WidgetUtils.isBackgroundWidget(widget)) {
-            doInsertToBackground(widget);
+            result = doInsertToBackground(widget);
         } else {
-            doInsertWithShift(widget);
+            result = doInsertWithShift(widget);
         }
 
-        // TODO that that widget with given id is not exist
-        return widgetRepository.save(widget);
+        return result;
     }
 
     private void checkUuidDoesNotExist(Widget widget) {
@@ -70,7 +71,7 @@ public class DatabaseWidgetCache implements WidgetCache {
     }
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    private void doInsertWithShift(Widget widget) {
+    private Widget doInsertWithShift(Widget widget) {
         checkUuidDoesNotExist(widget);
 
         Widget conflictedWidget = widgetRepository.findOneByZIndex(widget.getZIndex());
@@ -82,6 +83,7 @@ public class DatabaseWidgetCache implements WidgetCache {
             shiftAllWidgetsLayerByZIndex(conflictedWidget.getZIndex(), gap);
             widgetRepository.save(widget);
         }
+        return widget;
     }
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -111,37 +113,25 @@ public class DatabaseWidgetCache implements WidgetCache {
         return (int) query.getSingleResult();
     }
 
-    /*
-    	SELECT q1.position
-	    FROM queue as q1 LEFT JOIN queue AS q2 ON q1.position + 1 = q2.position 
-	    WHERE q2.name is NULL AND q1.position > 3
-	    ORDER BY q1.position
-	    LIMIT 1
-     */
-    /*public int findTheNearestGapAfter(int index) {
-        final String leftTableAlias = "t1";
-        final String rightTableAlias = "t2";
-        final String leftTableZIndex = leftTableAlias + "." + Widget.Z_INDEX_COLUMN_NAME;
-        final String rightTableZIndex = rightTableAlias + "." + Widget.Z_INDEX_COLUMN_NAME;
-
-        ;
-
-        entityManager.createQuery(query).getSingleResult();
-        return 1;
-    }*/
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    private void doInsertToBackground(Widget widget) {
-        Integer result = findTop1ByZIndex();
+    private Widget doInsertToBackground(Widget widget) {
+        checkUuidDoesNotExist(widget);
+        
+        Integer result = findSmallestZIndex();
         if (result == null) {
             result = DEFAULT_BACKGROUND_INDEX;
         }
 
         widget.setZIndex(result);
         widgetRepository.save(widget);
+        return widget;
     }
 
-    private Integer findTop1ByZIndex() {
+    /**
+     * @return null if database is empty
+     */
+    @Nullable
+    private Integer findSmallestZIndex() {
         Query query = entityManager.createQuery(
                 "SELECT zIndex " +
                         "FROM WIDGET " +

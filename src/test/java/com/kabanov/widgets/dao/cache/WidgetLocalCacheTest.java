@@ -167,14 +167,6 @@ public class WidgetLocalCacheTest {
         Assert.assertEquals(expected, widgetLocalCache.getAllWidgetsSortedByLayer());
     }
 
-    // TODO remove test
-    @Test
-    public void tt() {
-        widgetLocalCache.add(createWidget(1));
-        widgetLocalCache.add(createWidget(1));
-        System.out.println(1);
-    }
-
     @Test
     public void shouldReturnAllWidgetsInBound() {
         Widget first = createWidget(new Point(0, 0), 100, 100, 1);

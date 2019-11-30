@@ -16,28 +16,21 @@ import com.kabanov.widgets.utils.PointUtils;
 /**
  * @author Kabanov Alexey
  */
-// TODO double check indexes!!
-@Table(name = Widget.TABLE_NAME, indexes = { @Index(name = "IDX_START_POINT_SUM", columnList = "startPointSum") })
+@Table(name = Widget.TABLE_NAME, indexes = @Index(name = "IDX_START_POINT_SUM", columnList = "startPointSum"))
 @Entity(name = Widget.TABLE_NAME)
 public class Widget {
-    
-    public static final String TABLE_NAME= "WIDGET";
-    public static final String Z_INDEX_COLUMN_NAME = "zIndex";
-    
-    @Id
-    private UUID uuid;
-    private Point startPoint;
-    private int height;
-    private int width;
-                         
-    // TODO check column unique
-    @Column(unique = true, name=Z_INDEX_COLUMN_NAME)  
-    private Integer zIndex;
-    private LocalDateTime lastModificationTime;
 
-    @Column(name = "startPointSum")
-    private Integer startPointSum;
-    
+    public static final String TABLE_NAME = "WIDGET";
+    public static final String Z_INDEX_COLUMN_NAME = "zIndex";
+
+    @Id @Column(name = "uuid") private UUID uuid;
+    @Column(name = "startPoint") private Point startPoint;
+    @Column(name = "height") private int height;
+    @Column(name = "width") private int width;
+    @Column(name = Z_INDEX_COLUMN_NAME) private Integer zIndex;
+    @Column(name = "lastModificationTime") private LocalDateTime lastModificationTime;
+    @Column(name = "startPointSum") private Integer startPointSum;
+
     public Widget() {
     }
 
@@ -61,7 +54,7 @@ public class Widget {
         this.zIndex = widget.zIndex;
         this.lastModificationTime = widget.lastModificationTime;
     }
-    
+
     public UUID getUuid() {
         return uuid;
     }

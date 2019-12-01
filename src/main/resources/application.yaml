@@ -1,0 +1,12 @@
+rate-limits:
+  refill-interval-millis: 60000
+  default-rate-limit: 100
+
+
+  endpoints:
+    - path: /widget/all
+      rate-limit: 10
+    - path: /widget/create
+      rate-limit: 20
+      
+    

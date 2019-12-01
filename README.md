@@ -17,7 +17,7 @@ Application exposes following REST endpoints
 | DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                            |
 
 ## Structure overview 
-All widgets can be stored in local memory or in database. Implementation of `com.kabanov.widgets.dao.WidgetCache` specify where widgets will be stored. 
+All widgets can be stored in local memory or in database. Implementation of `com.kabanov.widgets.dao.WidgetCache` specify widgets storage.
 
 Currently there are two implementatons: 
  - `com.kabanov.widgets.dao.cache.InMemoryWidgetCache` stores widgets in local memory

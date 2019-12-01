@@ -65,5 +65,16 @@ In order to have an ability to iterate over sorted by start-point widgets, speci
 Using paging mechanism, we can receive sorted widgets one by one from database. We stop iterating when we find a widget, that gives a guarantee that all other widgets will be out of the region
 
 ## Pagination
+Available at the endpoint: `/widget/all/paged/?pageNumber={page_number}&pageSize={page_size}`
+Where page size is an optional parameter. 
+`Default page size` and `Max page size` are specified in `application.properties`: 
+ - pagination.size.default=10
+ - pagination.size.max=500
 
 ## Rate Limiting
+Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimitInterceptor` and configured in `application.yaml`, section `rate-limits`
+ - refill-interval-millis - time interfal in millis to refill all Buckets
+ - default-rate-limit - rate limit to default, not specified end-point
+ 
+ Config additional endpoints can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set
+ 

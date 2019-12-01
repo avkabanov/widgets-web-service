@@ -81,12 +81,31 @@ public class WidgetControllerItTest {
     }
 
     @Test
-    public void shouldGetAllWidgetByIdWhenReceivedRequestToGet() throws Exception {
+    public void shouldGetAllWidgetWhenReceivedRequestToGet() throws Exception {
         widgetService.addWidgetToCache(WidgetTestUtils.createWidget(1));
         widgetService.addWidgetToCache(WidgetTestUtils.createWidget(2));
         widgetService.addWidgetToCache(WidgetTestUtils.createWidget(3));
 
         MockHttpServletRequestBuilder request = get("/widget/all");
+
+        mockMvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    String content = result.getResponse().getContentAsString();
+                    objectMapper.readValue(content, new TypeReference<ArrayList<Widget>>() {
+                    });
+                });
+    }
+
+    @Test
+    public void shouldGetAllWidgetPagedWhenReceivedRequestToGet() throws Exception {
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(1));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(2));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(3));
+        widgetService.addWidgetToCache(WidgetTestUtils.createWidget(4));
+
+        MockHttpServletRequestBuilder request = get("/widget/all/paged?pageNumber=0&pageSize=3");
 
         mockMvc
                 .perform(request)

@@ -29,6 +29,8 @@ import static com.kabanov.widgets.test_utils.WidgetTestUtils.createWidget;
 /**
  * @author Kabanov Alexey
  */
+// TODO run tests with both profiles
+// TODO write in readme about profiles
 @ActiveProfiles(value = {"inMemoryStorage"})
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -178,6 +180,24 @@ public class WidgetCacheTest {
         widgetCache.add(second);
         widgetCache.add(third);
         Set<Widget> actual = new HashSet<>(widgetCache.getAllWidgetsInBound(bound));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnPagedWidgetsWhenPageIsGiven() {
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(one, two, three);
+
+        widgetCache.add(one);
+        widgetCache.add(two);
+        widgetCache.add(three);
+        widgetCache.add(four);
+
+        List<Widget> actual = widgetCache.getAllWidgetsSortedByLayer(0, 3);
 
         Assert.assertEquals(expected, actual);
     }

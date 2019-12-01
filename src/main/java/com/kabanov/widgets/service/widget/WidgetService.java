@@ -15,6 +15,7 @@ import com.kabanov.widgets.controller.request.FilterRequest;
 import com.kabanov.widgets.controller.request.UpdateWidgetRequest;
 import com.kabanov.widgets.dao.WidgetCache;
 import com.kabanov.widgets.domain.Bound;
+import com.kabanov.widgets.domain.PaginationProperties;
 import com.kabanov.widgets.domain.Widget;
 
 /**
@@ -24,10 +25,12 @@ import com.kabanov.widgets.domain.Widget;
 public class WidgetService {
 
     private WidgetCache widgetCache;
+    private PaginationProperties paginationProperties;
 
     @Autowired
-    public WidgetService(WidgetCache widgetCache) {
+    public WidgetService(WidgetCache widgetCache, PaginationProperties paginationProperties) {
         this.widgetCache = widgetCache;
+        this.paginationProperties = paginationProperties;
     }
 
     public Widget createWidget(@Nonnull CreateWidgetRequest createWidgetRequest) {
@@ -54,6 +57,19 @@ public class WidgetService {
     @Nonnull
     public List<Widget> getAllWidgetsSortedByLayer() {
         return widgetCache.getAllWidgetsSortedByLayer();
+    }
+
+    @Nonnull
+    public List<Widget> getAllWidgetsSortedByLayer(int pageNumber, @Nullable Integer pageSize) {
+        if (pageSize == null) {
+            pageSize = paginationProperties.getDefaultPageSize();
+        }
+
+        if (pageSize > paginationProperties.getMaxPageSize()) {
+            pageSize = paginationProperties.getMaxPageSize();
+        }
+
+        return widgetCache.getAllWidgetsSortedByLayer(pageNumber, pageSize);
     }
 
     @Nonnull

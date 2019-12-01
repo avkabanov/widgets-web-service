@@ -42,7 +42,6 @@ public class InMemoryWidgetCache implements WidgetCache {
             } else {
                 widgetPositionStorage.add(widget);
                 return widgetLayersStorage.add(widget);
-
             }
         });
     }
@@ -88,6 +87,12 @@ public class InMemoryWidgetCache implements WidgetCache {
     @Nonnull
     public List<Widget> getAllWidgetsSortedByLayer() {
         return widgetLayersStorage.getAllWidgetsSortedByLayer();
+    }
+
+    @Nonnull
+    @Override
+    public List<Widget> getAllWidgetsSortedByLayer(int pageNumber, int pageSize) {
+        return widgetLayersStorage.getAllWidgetsSortedByLayer(pageNumber, pageSize);
     }
 
     @Override

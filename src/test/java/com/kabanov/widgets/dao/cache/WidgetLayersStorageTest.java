@@ -1,14 +1,15 @@
 package com.kabanov.widgets.dao.cache;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kabanov.widgets.domain.Widget;
@@ -18,12 +19,19 @@ import com.kabanov.widgets.test_utils.WidgetTestUtils;
  * @author Kabanov Alexey
  */
 @RunWith(SpringRunner.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @WebMvcTest(value = WidgetLayersStorage.class)
 public class WidgetLayersStorageTest {
 
     @Autowired private WidgetLayersStorage widgetLayersStorage;
 
+    @Before
+    public void clearAll() {
+        for (Widget widget : widgetLayersStorage.getAllWidgetsSortedByLayer()) {
+            widgetLayersStorage.remove(widget);
+        }
+        Assert.assertTrue(widgetLayersStorage.getAllWidgetsSortedByLayer().isEmpty());
+    }
+    
     @Test
     public void addShouldReturnNewlyCreatedWidget() {
         Widget widget = WidgetTestUtils.createWidget(2);
@@ -122,9 +130,9 @@ public class WidgetLayersStorageTest {
     public void shouldWidgetBeRemovedWhenRemoveIsCalled() {
         Widget one = WidgetTestUtils.createWidget(1);
         Widget two = WidgetTestUtils.createWidget(2);
-        
+
         List<Widget> expected = Arrays.asList(two);
-        
+
         widgetLayersStorage.add(one);
         widgetLayersStorage.add(two);
         widgetLayersStorage.remove(one);
@@ -144,4 +152,57 @@ public class WidgetLayersStorageTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test
+    public void shouldReturnStartWidgetsWhenPageSizeIsGiven() {
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(one, two, three);
+
+        widgetLayersStorage.add(one);
+        widgetLayersStorage.add(two);
+        widgetLayersStorage.add(three);
+        widgetLayersStorage.add(four);
+
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer(0, 3);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnNonFullListWhenThereAreNoEnoughWidgets() {
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
+        List<Widget> expected = WidgetTestUtils.deepCopyToList(four);
+
+        widgetLayersStorage.add(one);
+        widgetLayersStorage.add(two);
+        widgetLayersStorage.add(three);
+        widgetLayersStorage.add(four);
+
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer(1, 3);
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenNoWidgetsInPage() {
+        Widget one = WidgetTestUtils.createWidget(1);
+        Widget two = WidgetTestUtils.createWidget(2);
+        Widget three = WidgetTestUtils.createWidget(3);
+        Widget four = WidgetTestUtils.createWidget(4);
+        List<Widget> expected = Collections.emptyList();
+
+        widgetLayersStorage.add(one);
+        widgetLayersStorage.add(two);
+        widgetLayersStorage.add(three);
+        widgetLayersStorage.add(four);
+
+        List<Widget> actual = widgetLayersStorage.getAllWidgetsSortedByLayer(2, 3);
+
+        Assert.assertEquals(expected, actual);
+    }
 }

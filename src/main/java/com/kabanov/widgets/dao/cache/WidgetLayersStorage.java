@@ -117,7 +117,8 @@ public class WidgetLayersStorage {
 
     private int getBackgroundIndex() {
         return LockUtils.executeInLock(accessTreeLock,
-                () -> widgetsByLayer.isEmpty() ? WidgetCache.DEFAULT_BACKGROUND_INDEX : widgetsByLayer.first().getZIndex() - 1);
+                () -> widgetsByLayer.isEmpty() ? WidgetCache.DEFAULT_BACKGROUND_INDEX : widgetsByLayer.first()
+                        .getZIndex() - 1);
     }
 
     public List<Widget> getAllWidgetsSortedByLayer() {
@@ -126,5 +127,29 @@ public class WidgetLayersStorage {
 
     public void remove(Widget value) {
         LockUtils.executeInLock(accessTreeLock, () -> widgetsByLayer.remove(value));
+    }
+
+    public List<Widget> getAllWidgetsSortedByLayer(int pageNumber, int pageSize) {
+        List<Widget> result = new ArrayList<>();
+        int indexFromInc = pageNumber * pageSize;
+        int indexToExc = indexFromInc + pageSize;
+
+        LockUtils.executeInLock(accessTreeLock, () -> {
+            Iterator<Widget> it = widgetsByLayer.iterator();
+
+            int current = 0;
+            while (it.hasNext()) {
+                Widget element = it.next();
+                if (current >= indexFromInc) {
+                    result.add(element);
+                }
+
+                current++;
+                if (current == indexToExc) {
+                    break;
+                }
+            }
+        });
+        return result;
     }
 }

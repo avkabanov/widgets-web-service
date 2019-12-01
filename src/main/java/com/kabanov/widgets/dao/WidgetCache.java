@@ -14,7 +14,10 @@ import com.kabanov.widgets.domain.Widget;
  * @author Kabanov Alexey
  */
 public interface WidgetCache {
-
+// TODO write javadocs
+    /**
+     * Default index for background widget if no other widgets exists
+     */
     int DEFAULT_BACKGROUND_INDEX = 0;
 
     /**
@@ -41,6 +44,9 @@ public interface WidgetCache {
 
     @Nonnull
     List<Widget> getAllWidgetsSortedByLayer();
+
+    @Nonnull
+    List<Widget> getAllWidgetsSortedByLayer(int pageNumber, int pageSize);
 
     @Nonnull
     List<Widget> getAllWidgetsInBound(Bound bound);

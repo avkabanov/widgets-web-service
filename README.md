@@ -6,14 +6,15 @@ All calls to API must be started with http://localhost:8080/
 
 Application exposes following REST endpoints
 
-| Http method | Endpoint               | Returns                            | Description                                                    |
-|-------------|------------------------|------------------------------------|----------------------------------------------------------------|
-| POST        | /widget/create         | Created widget                     | Creates new widget. Created of widgets returned                |
-| GET         | /widget/{uuid}         | Widget with the given ID           | Retrieves widget with the given ID                             |
-| GET         | /widget/all            | All widgets                        | Retrieves all widgets                                          |
-| PUT         | /widget/update         | Updated widget                     | Updates the widget                                             |
-| GET         | /widget/filter         | Widgets that fall into the region  | Return only the widgets that fall entirely into the region     |
-| DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                |
+| Http method | Endpoint               | Returns                            | Description                                                                |
+|-------------|------------------------|------------------------------------|----------------------------------------------------------------------------|
+| POST        | /widget/create         | Created widget                     | Creates new widget. Created of widgets returned                            |
+| GET         | /widget/{uuid}         | Widget with the given ID           | Retrieves widget with the given ID                                         |
+| GET         | /widget/all            | All widgets                        | Retrieves all widgets                                                      |
+| GET         | /widget/all/paged/     | All widgets with pagination        | Retrieves all widgets with pagination. Page has zero-based page index.     |
+| PUT         | /widget/update         | Updated widget                     | Updates the widget                                                         |
+| GET         | /widget/filter         | Widgets that fall into the region  | Return only the widgets that fall entirely into the region                 |
+| DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                            |
 
 ## Structure overview 
 In order to optimize access to widgets, three classes to store widgets has been used: 

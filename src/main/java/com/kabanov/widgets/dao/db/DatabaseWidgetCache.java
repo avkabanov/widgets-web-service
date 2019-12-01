@@ -87,7 +87,7 @@ public class DatabaseWidgetCache implements WidgetCache {
     }
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    public void shiftAllWidgetsLayerByZIndex(int zIndexFromInclusive, int zIndexToInclusive) {
+    private void shiftAllWidgetsLayerByZIndex(int zIndexFromInclusive, int zIndexToInclusive) {
         Query query = entityManager.createQuery(
                 "UPDATE WIDGET " +
                         "SET zIndex = zIndex + 1 " +
@@ -100,7 +100,7 @@ public class DatabaseWidgetCache implements WidgetCache {
         query.executeUpdate();
     }
 
-    public int findFirstGapFrom(int index) {
+    private int findFirstGapFrom(int index) {
         // TODO update table name?
         Query query = entityManager.createQuery(
                 "SELECT t1.zIndex " +
@@ -180,6 +180,13 @@ public class DatabaseWidgetCache implements WidgetCache {
 
     @Nonnull
     @Override
+    public List<Widget> getAllWidgetsSortedByLayer(int pageNumber, int pageSize) {
+        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return widgetRepository.findAll(pageRequest).getContent();
+    }
+
+    @Nonnull
+    @Override
     public List<Widget> getAllWidgetsInBound(Bound bound) {
         InBoundCalculator inBoundCalculator = inBoundCalculatorFactory.getInBoundCalculator(bound);
         Point upperRightPoint = bound.calculateUpperRightPoint();
@@ -205,6 +212,7 @@ public class DatabaseWidgetCache implements WidgetCache {
 
     @Nullable
     private Page<Widget> findAllSortedByStartPointSum(int currentPage) {
+        // retrieve widgets one by one from database
         final PageRequest pageRequest = PageRequest.of(currentPage, 1, Sort.by("startPointSum").ascending());
         Page<Widget> page = widgetRepository.findAll(pageRequest);
 

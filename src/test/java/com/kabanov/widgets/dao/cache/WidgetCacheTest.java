@@ -29,8 +29,6 @@ import static com.kabanov.widgets.test_utils.WidgetTestUtils.createWidget;
 /**
  * @author Kabanov Alexey
  */
-// TODO run tests with both profiles
-// TODO write in readme about profiles
 @ActiveProfiles(value = {"inMemoryStorage"})
 @RunWith(SpringRunner.class)
 @WebMvcTest

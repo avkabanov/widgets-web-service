@@ -14,15 +14,13 @@ import com.kabanov.widgets.domain.Widget;
  * @author Kabanov Alexey
  */
 public interface WidgetCache {
-// TODO write javadocs
     /**
      * Default index for background widget if no other widgets exists
      */
     int DEFAULT_BACKGROUND_INDEX = 0;
 
     /**
-     * 
-     * @param widget
+     * @param widget widget to add
      * @return created widget
      * @throws IllegalArgumentException if widget with given uuid already exist
      */
@@ -30,6 +28,10 @@ public interface WidgetCache {
     Widget add(@Nonnull Widget widget);
 
     /**
+     * Updates all non null fields in update widgets request.
+     * <p>
+     * {@link Widget#getLastModificationTime()} is updated internally
+     *
      * @param updateWidgetRequest
      * @return updated widget
      * @throws IllegalArgumentException if widget by id was not found
@@ -37,6 +39,9 @@ public interface WidgetCache {
     @Nonnull
     Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest);
 
+    /**
+     * @param uuid id of widget to remove
+     */
     void deleteWidget(@Nonnull UUID uuid);
 
     @Nullable
@@ -48,8 +53,15 @@ public interface WidgetCache {
     @Nonnull
     List<Widget> getAllWidgetsSortedByLayer(int pageNumber, int pageSize);
 
+    /**
+     * @param bound
+     * @return returns all widgets that fall into specific region
+     */
     @Nonnull
     List<Widget> getAllWidgetsInBound(Bound bound);
 
+    /**
+     * Removes all widget
+     */
     void deleteAll();
 }

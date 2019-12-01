@@ -9,7 +9,7 @@ import com.kabanov.widgets.interseptor.rate_limit.data.Bucket;
  * @author Kabanov Alexey
  */
 public class BucketTest {
-
+   // TODO fix tests
     @Test
     public void shouldReturnMaxTokensOnRefill() {
         Bucket bucket = new Bucket(10);

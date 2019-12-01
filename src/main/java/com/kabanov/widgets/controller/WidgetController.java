@@ -90,7 +90,4 @@ public class WidgetController {
                              @PathVariable UUID uuid) {
         widgetService.deleteWidget(uuid);
     }
-    // remove @ResponseStatus(value = HttpStatus.OK) where not required
-    // TODO should remove widget return anything?
-
 }

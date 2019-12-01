@@ -185,6 +185,7 @@ public class DatabaseWidgetCache implements WidgetCache {
         return widgetRepository.findAll(pageRequest).getContent();
     }
 
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Nonnull
     @Override
     public List<Widget> getAllWidgetsInBound(Bound bound) {
@@ -210,6 +211,7 @@ public class DatabaseWidgetCache implements WidgetCache {
         return result;
     }
 
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Nullable
     private Page<Widget> findAllSortedByStartPointSum(int currentPage) {
         // retrieve widgets one by one from database

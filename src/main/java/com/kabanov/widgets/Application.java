@@ -18,7 +18,8 @@ import com.kabanov.widgets.interseptor.rate_limit.RateLimitInterceptor;
 @ImportResource("classpath:spring-config.xml")
 public class Application implements WebMvcConfigurer {
     
-    @Autowired RateLimitInterceptor interceptor;
+    @Autowired 
+    private RateLimitInterceptor interceptor;
     
     public static void main(String... args) {
         SpringApplication.run(Application.class, args);

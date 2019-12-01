@@ -17,12 +17,25 @@ Application exposes following REST endpoints
 | DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                            |
 
 ## Structure overview 
+created widgets can be stored in local memory or in database. Implementation of `com.kabanov.widgets.dao.WidgetCache` specify where widgets will be stored. 
+
+Currently there are two implementatons: 
+ - `com.kabanov.widgets.dao.cache.InMemoryWidgetCache` stores widgets in local memory
+ - `com.kabanov.widgets.dao.db.DatabaseWidgetCache` stored widgets in database
+ 
+ Implementation can be choosen by activating profile in `application.properties`
+ 
+- `spring.profiles.active=databaseStorage`
+or
+- `spring.profiles.active=inMemoryStorage`
+
+### in Memory Storage
 In order to optimize access to widgets, three classes to store widgets has been used: 
 
-### com.kabanov.widgets.dao.cache.WidgetCache 
+#### com.kabanov.widgets.dao.cache.WidgetCache 
 stores widgets in ConcurrentHashMap what allows to access widgets by id in a constant time.
 
-### com.kabanov.widgets.dao.cache.WidgetLayersStorage 
+#### com.kabanov.widgets.dao.cache.WidgetLayersStorage 
 contains logic of setting proper Z index, and shifting widgets with the same Z index. Under the hood all widgets
 stored in ConcurrentSkipListSet what allows to add and remove different widgets simultaneously. 
 
@@ -35,11 +48,23 @@ To achieve that synchronization I used ReentrantReadWriteLock.
  
 Due to the tree structure, we can get all widgets sorted by Z-layer in a constant time     
 
-### com.kabanov.widgets.dao.cache.WidgetPositionStorage 
+#### com.kabanov.widgets.dao.cache.WidgetPositionStorage 
 Stores all widgets sorted by their start point. 
 That gives performance when it's required to find all widgets that fall into the region. 
 
 By iterating over sorted by start-point widgets, if start point (bottom-left point) of some widget is after top-right
 point of a region - that means this and all following widgets will not fall into the region. 
 
-Therefore we don't need to check all widgets if they fall into region or not.      
+Therefore we don't need to check all widgets if they fall into region or not.    
+
+### Database storage
+#### get all widgets that fall into the region
+It has been decided to use the same tree-base approach: by iterating over sorted by start-point widgets, if start point (bottom-left point) of some widget is after top-right point of a region - that means this and all following widgets will not fall into the region.
+
+In order to have an ability to iterate over sorted by start-point widgets, special column was added to the entity: `startPointSum` and index on that column.
+
+Using paging mechanism, we can receive sorted widgets one by one from database. We stop iterating when we find a widget, that gives a guarantee that all other widgets will be out of the region
+
+## Pagination
+
+## Rate Limiting

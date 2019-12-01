@@ -1,4 +1,4 @@
-package com.kabanov.widgets.interseptor.rate_limit;
+package com.kabanov.widgets.interseptor.rate_limit.data;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;

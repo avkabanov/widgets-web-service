@@ -1,4 +1,4 @@
-package com.kabanov.widgets.interseptor.rate_limit;
+package com.kabanov.widgets.interseptor.rate_limit.data;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
  * @author Kabanov Alexey
  */
 @Component
-public class Refill {
+public class Refiller {
     
     private List<Refillable> refillables = new CopyOnWriteArrayList<>();
     private long refillIntervalMillis;
 
     @Autowired
-    public Refill(@Value("${rate-limits.refill-interval-millis}") long refillIntervalMillis) {
+    public Refiller(@Value("${rate-limits.refill-interval-millis}") long refillIntervalMillis) {
         this.refillIntervalMillis = refillIntervalMillis;
     }
 

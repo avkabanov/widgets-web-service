@@ -1,4 +1,4 @@
-package com.kabanov.widgets.interseptor.rate_limit;
+package com.kabanov.widgets.interseptor.rate_limit.properties;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,8 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.kabanov.widgets.interseptor.rate_limit.data.Bucket;
+import com.kabanov.widgets.interseptor.rate_limit.data.ConsumptionProbe;
+import com.kabanov.widgets.interseptor.rate_limit.data.Refiller;
+import com.kabanov.widgets.interseptor.rate_limit.properties.RateLimitProperties;
 
 /**
  * @author Kabanov Alexey
@@ -19,21 +25,21 @@ public class RateLimitInterceptor extends HandlerInterceptorAdapter {
 
     private ConcurrentHashMap<String, Bucket> bucketsPerEndpoint = new ConcurrentHashMap<>();
     private Bucket defaultEndpointBucket;
-    private Refill refill;
+    private Refiller refiller;
     private RateLimitProperties properties;
 
     @Autowired
-    public RateLimitInterceptor(Refill refill, RateLimitProperties properties) {
-        this.refill = refill;
+    public RateLimitInterceptor(Refiller refiller, RateLimitProperties properties) {
+        this.refiller = refiller;
         this.properties = properties;
         
         defaultEndpointBucket = new Bucket(properties.getDefaultRateLimit());
-        refill.addRefillable(defaultEndpointBucket);
+        refiller.addRefillable(defaultEndpointBucket);
         
         for (RateLimitProperties.Endpoint endpoint : properties.getEndpoints()) {
             Bucket bucket = new Bucket(endpoint.getRateLimit());
             bucketsPerEndpoint.put(endpoint.getPath(), bucket);
-            refill.addRefillable(bucket);
+            refiller.addRefillable(bucket);
         }
     }
 
@@ -54,7 +60,12 @@ public class RateLimitInterceptor extends HandlerInterceptorAdapter {
         response.addHeader("X-Rate-Limit-Reset",
                 Long.toString(TimeUnit.MILLISECONDS.toSeconds(probe.getMillisToWaitForRefill())));
 
-        return probe.isConsumed();
+        if (probe.isConsumed()) {
+            return true;
+        } else {
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value()); // 429
+            return false;
+        }
     }
 
     @Nonnull

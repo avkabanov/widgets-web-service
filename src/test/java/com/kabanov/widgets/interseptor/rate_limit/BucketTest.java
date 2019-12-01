@@ -3,6 +3,8 @@ package com.kabanov.widgets.interseptor.rate_limit;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.kabanov.widgets.interseptor.rate_limit.data.Bucket;
+
 /**
  * @author Kabanov Alexey
  */

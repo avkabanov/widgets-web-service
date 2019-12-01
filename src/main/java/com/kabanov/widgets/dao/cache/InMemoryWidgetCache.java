@@ -38,11 +38,11 @@ public class InMemoryWidgetCache implements WidgetCache {
         return uuidWidgetMap.compute(widget.getUuid(), (uuid, currentValue) -> {
             if (currentValue != null) {
                 throw new IllegalArgumentException("Can not add widget with UUID: " + widget.getUuid() + ". " +
-                        "Widget with such id already exist: " + currentValue);    
+                        "Widget with such id already exist: " + currentValue);
             } else {
                 widgetPositionStorage.add(widget);
-                return widgetLayersStorage.add(widget); 
-                
+                return widgetLayersStorage.add(widget);
+
             }
         });
     }
@@ -52,11 +52,12 @@ public class InMemoryWidgetCache implements WidgetCache {
     public Widget updateWidget(@Nonnull UpdateWidgetRequest updateWidgetRequest) {
         return uuidWidgetMap.compute(updateWidgetRequest.getUuid(), (uuid, existingWidget) -> {
             if (existingWidget == null) {
-                throw new IllegalArgumentException("Widget with UUID: " + updateWidgetRequest.getUuid() + " was not found");
+                throw new IllegalArgumentException(
+                        "Widget with UUID: " + updateWidgetRequest.getUuid() + " was not found");
             }
             Widget updatedWidget = updateWidgetRequest.createUpdatedWidget(existingWidget);
             updatedWidget.setLastModificationTime(LocalDateTime.now());
-            
+
             widgetPositionStorage.update(existingWidget, updatedWidget);
             widgetLayersStorage.update(existingWidget, updatedWidget);
             return updatedWidget;
@@ -97,9 +98,12 @@ public class InMemoryWidgetCache implements WidgetCache {
 
     @Override
     public void deleteAll() {
-        // TODO Fix
-        //widgetLayersStorage.
-        //widgetPositionStorage.
-        //uuidWidgetMap.    
+        for (UUID uuid : uuidWidgetMap.keySet()) {
+            uuidWidgetMap.computeIfPresent(uuid, ((uuid1, widget) -> {
+                widgetLayersStorage.remove(widget);
+                widgetPositionStorage.remove(widget);
+                return null;
+            }));
+        }
     }
 }

@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,26 +29,25 @@ import static com.kabanov.widgets.test_utils.WidgetTestUtils.createWidget;
 /**
  * @author Kabanov Alexey
  */
-@ActiveProfiles(value = {"databaseStorage"})
+@ActiveProfiles(value = {"inMemoryStorage"})
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class WidgetLocalCacheTest {
+public class WidgetCacheTest {
 
-    @Autowired private WidgetCache widgetLocalCache;
+    @Autowired private WidgetCache widgetCache;
 
     @Before
-    public void setup () {
-        widgetLocalCache.deleteAll();
-        Assert.assertEquals(0, widgetLocalCache.getAllWidgetsSortedByLayer().size());
+    public void clearAllWidgets() {
+        widgetCache.deleteAll();
+        Assert.assertEquals(0, widgetCache.getAllWidgetsSortedByLayer().size());
     }
-    
+
     @Test
     public void addShouldReturnNewlyCreatedWidget() {
         Widget widget = createWidget(2);
         Widget expected = createWidget(widget, 2);
 
-        Widget actual = widgetLocalCache.add(widget);
+        Widget actual = widgetCache.add(widget);
 
         Assert.assertEquals(expected, actual);
     }
@@ -59,7 +57,7 @@ public class WidgetLocalCacheTest {
         Widget widget = createWidget(null);
         Widget expected = createWidget(widget, 0);
 
-        Widget actual = widgetLocalCache.add(widget);
+        Widget actual = widgetCache.add(widget);
 
         Assert.assertEquals(expected, actual);
     }
@@ -69,8 +67,8 @@ public class WidgetLocalCacheTest {
         Widget widget = createWidget(2);
         Widget expected = createWidget(widget, 2);
 
-        widgetLocalCache.add(widget);
-        Widget actual = widgetLocalCache.getWidget(widget.getUuid());
+        widgetCache.add(widget);
+        Widget actual = widgetCache.getWidget(widget.getUuid());
 
         Assert.assertEquals(expected, actual);
     }
@@ -81,13 +79,13 @@ public class WidgetLocalCacheTest {
         Widget second = createWidget(2);
         second.setUuid(first.getUuid());
 
-        widgetLocalCache.add(first);
-        widgetLocalCache.add(second);
+        widgetCache.add(first);
+        widgetCache.add(second);
     }
 
     @Test
     public void shouldReturnNullWhenCacheIsEmpty() {
-        Widget actual = widgetLocalCache.getWidget(UUID.randomUUID());
+        Widget actual = widgetCache.getWidget(UUID.randomUUID());
         Assert.assertNull(actual);
     }
 
@@ -100,12 +98,12 @@ public class WidgetLocalCacheTest {
 
         List<Widget> expected = WidgetTestUtils.deepCopyToList(one, two, three, four);
 
-        widgetLocalCache.add(three);
-        widgetLocalCache.add(two);
-        widgetLocalCache.add(one);
-        widgetLocalCache.add(four);
+        widgetCache.add(three);
+        widgetCache.add(two);
+        widgetCache.add(one);
+        widgetCache.add(four);
 
-        List<Widget> actual = widgetLocalCache.getAllWidgetsSortedByLayer();
+        List<Widget> actual = widgetCache.getAllWidgetsSortedByLayer();
         Assert.assertEquals(expected, actual);
     }
 
@@ -122,22 +120,22 @@ public class WidgetLocalCacheTest {
         updateWidgetRequest.setzIndex(5);
 
         Widget expected = new Widget(uuid, new Point(2, 2), 3, 4, 5, LocalDateTime.now());
-        widgetLocalCache.add(widget);
+        widgetCache.add(widget);
 
         // sleep minimum amount of time in order to change last modification time later
         sleepMillis(1);
-        Widget actual = widgetLocalCache.updateWidget(updateWidgetRequest);
-        
+        Widget actual = widgetCache.updateWidget(updateWidgetRequest);
+
         // first of all we check last modification time
         Assert.assertTrue(actual.getLastModificationTime().isAfter(widget.getLastModificationTime()));
-        
+
         // after we checked it, we set actual last modification time to expected widget in order to compare 
         // widget with #equals
         expected.setLastModificationTime(actual.getLastModificationTime());
         Assert.assertEquals(expected, actual);
 
-        Assert.assertEquals(expected, widgetLocalCache.getWidget(uuid));
-        Assert.assertEquals(expected, widgetLocalCache.getAllWidgetsSortedByLayer().get(0));
+        Assert.assertEquals(expected, widgetCache.getWidget(uuid));
+        Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer().get(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -147,8 +145,8 @@ public class WidgetLocalCacheTest {
         updateRequest.setUuid(UUID.randomUUID());
         updateRequest.setHeight(10); // update random field
 
-        widgetLocalCache.add(widget);
-        widgetLocalCache.updateWidget(updateRequest);
+        widgetCache.add(widget);
+        widgetCache.updateWidget(updateRequest);
     }
 
     @Test
@@ -158,13 +156,13 @@ public class WidgetLocalCacheTest {
 
         List<Widget> expected = Arrays.asList(one);
 
-        widgetLocalCache.add(one);
-        widgetLocalCache.add(two);
+        widgetCache.add(one);
+        widgetCache.add(two);
 
-        widgetLocalCache.deleteWidget(two.getUuid());
+        widgetCache.deleteWidget(two.getUuid());
 
-        Assert.assertNull(widgetLocalCache.getWidget(two.getUuid()));
-        Assert.assertEquals(expected, widgetLocalCache.getAllWidgetsSortedByLayer());
+        Assert.assertNull(widgetCache.getWidget(two.getUuid()));
+        Assert.assertEquals(expected, widgetCache.getAllWidgetsSortedByLayer());
     }
 
     @Test
@@ -176,10 +174,10 @@ public class WidgetLocalCacheTest {
 
         Set<Widget> expected = new HashSet<>(WidgetTestUtils.deepCopyToList(first, second));
 
-        widgetLocalCache.add(first);
-        widgetLocalCache.add(second);
-        widgetLocalCache.add(third);
-        Set<Widget> actual = new HashSet<>(widgetLocalCache.getAllWidgetsInBound(bound));
+        widgetCache.add(first);
+        widgetCache.add(second);
+        widgetCache.add(third);
+        Set<Widget> actual = new HashSet<>(widgetCache.getAllWidgetsInBound(bound));
 
         Assert.assertEquals(expected, actual);
     }

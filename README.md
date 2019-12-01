@@ -73,8 +73,8 @@ Where page size is an optional parameter.
 
 ## Rate Limiting
 Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimitInterceptor` and configured in `application.yaml`, section `rate-limits`
- - refill-interval-millis - time interfal in millis to refill all Buckets
- - default-rate-limit - rate limit to default, not specified end-point
+ - `refill-interval-millis` - time interfal in millis to refill all Buckets
+ - `default-rate-limit` - rate limit to default, not specified end-point
  
  Config additional endpoints can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set
  

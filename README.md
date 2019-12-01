@@ -11,7 +11,7 @@ Application exposes following REST endpoints
 | POST        | /widget/create         | Created widget                     | Creates new widget. Created of widgets returned                            |
 | GET         | /widget/{uuid}         | Widget with the given ID           | Retrieves widget with the given ID                                         |
 | GET         | /widget/all            | All widgets                        | Retrieves all widgets                                                      |
-| GET         | /widget/all/paged/     | All widgets with pagination        | Retrieves all widgets with pagination. Page has zero-based page index.     |
+| GET         | /widget/all/paged/?pageNumber={page_number}&pageSize={page_size}     | All widgets with pagination        | Retrieves all widgets with pagination. Page has zero-based page index.     |
 | PUT         | /widget/update         | Updated widget                     | Updates the widget                                                         |
 | GET         | /widget/filter         | Widgets that fall into the region  | Return only the widgets that fall entirely into the region                 |
 | DELETE      | /widget/delete/{uuid}  | Removes widget with the given ID   |                                                                            |

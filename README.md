@@ -78,3 +78,6 @@ Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimi
  
  Config additional endpoints can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set
  
+## Build and run
+Application can be started with a single command line
+`mvn spring-boot:run`

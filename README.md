@@ -19,11 +19,11 @@ Application exposes following REST endpoints
 ## Structure overview 
 All widgets can be stored in local memory or in database. Implementation of `com.kabanov.widgets.dao.WidgetCache` specify widgets storage.
 
-Currently there are two implementatons: 
+Currently there are two implementations: 
  - `com.kabanov.widgets.dao.cache.InMemoryWidgetCache` stores widgets in local memory
  - `com.kabanov.widgets.dao.db.DatabaseWidgetCache` stored widgets in database
  
- Implementation can be choosen by activating profile in `application.properties`
+ Implementation can be chosen by activating profile in `application.properties`
  
 - `spring.profiles.active=databaseStorage`
 or
@@ -33,10 +33,10 @@ or
 In order to optimize access to widgets, three classes to store widgets has been used: 
 
 #### com.kabanov.widgets.dao.cache.WidgetCache 
-stores widgets in ConcurrentHashMap what allows to access widgets by id in a constant time.
+Stores widgets in ConcurrentHashMap what allows to access widgets by id in a constant time.
 
 #### com.kabanov.widgets.dao.cache.WidgetLayersStorage 
-contains logic of setting proper Z index, and shifting widgets with the same Z index. Under the hood all widgets
+Contains logic of setting proper Z index, and shifting widgets with the same Z index. Under the hood, all widgets
 stored in ConcurrentSkipListSet what allows to add and remove different widgets simultaneously. 
 
 There is also additional synchronization was added: in the process of inserting widget with existing z-index, 
@@ -62,7 +62,7 @@ In order to get all widgets that fall into the region, it has been decided to us
 
 In order to have an ability to iterate over sorted by start-point widgets, special column was added to the entity: `startPointSum` and index on that column.
 
-Using paging mechanism, we can receive sorted widgets one by one from database. We stop iterating when we find a widget, that gives a guarantee that all other widgets will be out of the region
+Using paging mechanism, we can receive sorted widgets one by one from database. We stop iterating when we find a widget that gives a guarantee that all other widgets will be out of the region
 
 ## Pagination
 Available at the endpoint: `/widget/all/paged/?pageNumber={page_number}&pageSize={page_size}`
@@ -73,7 +73,7 @@ Where page size is an optional parameter.
 
 ## Rate Limiting
 Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimitInterceptor` and configured in `application.yaml`, section `rate-limits`
- - `refill-interval-millis` - time interfal in millis to refill all Buckets
+ - `refill-interval-millis` - time interval in millis to refill all Buckets
  - `default-rate-limit` - rate limit to default, not specified end-point
  
  Config additional endpoints can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set

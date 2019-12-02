@@ -60,7 +60,7 @@ Therefore we don't need to check all widgets if they fall into region or not.
 ### Database storage
 In order to get all widgets that fall into the region, it has been decided to use the same tree-base approach: by iterating over sorted by start-point widgets, if start point (bottom-left point) of some widget is after top-right point of a region - that means this and all following widgets will not fall into the region.
 
-In order to have an ability to iterate over sorted by start-point widgets, special column was added to the entity: `startPointSum` and index on that column.
+In order to have an ability to iterate over sorted by start-point widgets, special column was added to the entity: `startPointSum` and added index on that column.
 
 Using paging mechanism, we can receive sorted widgets one by one from database. We stop iterating when we find a widget that gives a guarantee that all other widgets will be out of the region
 
@@ -76,7 +76,7 @@ Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimi
  - `refill-interval-millis` - time interval in millis to refill all Buckets
  - `default-rate-limit` - rate limit to default, not specified end-point
  
- Config additional endpoints can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set
+Additional endpoints configuration can be made in `endpoints` section. For every endpoint `path` and `rate-limit` can be set
  
 ## Build and run
 Application can be started with a single command line

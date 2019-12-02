@@ -80,4 +80,6 @@ Rate Limit is controlled by `com.kabanov.widgets.interseptor.rate_limit.RateLimi
  
 ## Build and run
 Application can be started with a single command line
-`mvn spring-boot:run`
+```
+mvn spring-boot:run
+```

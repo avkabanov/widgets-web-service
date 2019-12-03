@@ -24,7 +24,12 @@ import com.kabanov.widgets.service.widget.WidgetService;
 @RequestMapping(path = "/widget")
 public class FilterController {
     
-    @Autowired WidgetService widgetService;
+    private WidgetService widgetService;
+
+    @Autowired
+    public FilterController(WidgetService widgetService) {
+        this.widgetService = widgetService;
+    }
 
     @GetMapping(path = "/filter")
     @ResponseBody
